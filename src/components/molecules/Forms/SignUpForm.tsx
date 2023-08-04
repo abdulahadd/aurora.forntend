@@ -3,14 +3,12 @@ import bgimg from '../../../assets/st.jpeg'
 import { useForm, SubmitHandler } from "react-hook-form";
 import { useEffect, useRef, useState } from 'react';
 import DropDown from '../../atoms/buttons/dropdowns/Dropdown';
-import { UserData } from '../../atoms/types/user/userData';
+import { PostData, UserData } from '../../atoms/types/user/userData';
 import { RoleType } from '../../atoms/types/roles/RoleType';
 import { OrganisationType } from '../../atoms/types/Organisation/OrgData';
-
+import axios from 'axios';
 
 type SignUpProp={
-    userData:UserData;
-    setUserData: (data: UserData)=>void;
     setError: (value: boolean)=>void;
 }
 
@@ -22,7 +20,16 @@ const SignUpForm = (porps:SignUpProp) => {
     const [selectOrga, setSelectOrga]=useState("Select");
 
 
-  const {register, handleSubmit, formState : {errors}, reset} = useForm<UserData>();
+  const {register, handleSubmit,formState : {errors}, reset} = useForm<UserData>();
+
+  const [userData, setUserData]= useState<UserData>({
+    username:'',
+    email:'',
+    password:'',
+    age: 0,
+    orga:'',
+    role:'',
+});
 
    
     const [isSubmitted, setIsSubmitted] = useState(false);
@@ -68,12 +75,42 @@ const SignUpForm = (porps:SignUpProp) => {
 
 
 
+    const postRequest = async (obj:UserData) => {
+
+      const postData:PostData={
+        username:obj.username,
+        email:obj.email,
+        password:obj.password,
+        age: obj.age,
+        orgId:obj.orga,
+        role:obj.role,
+        isRegistered:false
+      };
+
+      try {
+  
+        const response = await axios.post('http://localhost:5000/users', postData);
+        console.log('Response: ', response.data);
+  
+        // Do something with the response if needed
+      } catch (error) {
+        // Handle errors, if any
+        console.error('Error: ', error);
+      }
+
+
+
+      
+    };
+
+
+
     const onSubmit: SubmitHandler<UserData> = data => {
+      console.log("Errors" , errors)
       console.log('FormData', data)
-      const obj={...porps.userData, ...data}
-      setIsSubmitted(true);
+      const obj={...userData, ...data}
       console.log('object', obj);
-      porps.setUserData(obj);
+      postRequest(obj);
       if(!!errors){
         porps.setError(false)
       }
@@ -88,11 +125,10 @@ const SignUpForm = (porps:SignUpProp) => {
     const SelectHandler = (inputString: string, key:any) => {
       console.log('Input', inputString);
       console.log('key', key);
-      const updatedUserData: any = { ...porps.userData };
+      const updatedUserData: any = { ...userData };
       updatedUserData[key] = inputString;
-  
       console.log("updated", updatedUserData)
-      porps.setUserData(updatedUserData);
+      setUserData(updatedUserData);
     };
   
 
@@ -103,7 +139,9 @@ const SignUpForm = (porps:SignUpProp) => {
         <img className='w-full h-full' src={bgimg} alt='/'/>
       </div>
       <div className='bg-purple-400 flex flex-col justify-center '>
-        <form className='max-w-[410px] w-full mx-auto bg-indigo-200 p-4 border-2 rounded-xl border-blue-400 mt-15' onSubmit={handleSubmit(onSubmit)} >
+        <form className='max-w-[410px] w-full mx-auto bg-indigo-200 p-4 border-2 rounded-xl border-blue-400 mt-15' onSubmit={
+        handleSubmit(onSubmit)
+        } >
                 <div className='w-full '>
                     <h2 className='text-4xl font-bold text-center py-6'>AURORA.</h2>
                 </div>
@@ -111,7 +149,7 @@ const SignUpForm = (porps:SignUpProp) => {
           <div className='flex flex-col py2'>
             <label className='text-left'>Username</label>
             <input className='border p-2  mt-2 mb-1' {...register("username", { required: true })} type='text'/>
-            <p className='text-left text-red-900 mb-2'>{isSubmitted && errors.username && "Username is required"}</p>
+            <p className='text-left text-red-900 mb-2'>{errors.username && "Username is required"}</p>
 
           </div>
           <div className='flex flex-col py2'>
@@ -146,7 +184,7 @@ const SignUpForm = (porps:SignUpProp) => {
              </div>
           </div>
         
-          <button className='border w-full my-5  py-2 bg-indigo-600 hover:bg-indigo-400 text-white' >Register</button>
+          <button className='border w-full my-5  py-2 bg-indigo-600 hover:bg-indigo-400 text-white' type="submit" onClick={()=>( setIsSubmitted(true))}>Register</button>
           
         </form>
       </div>

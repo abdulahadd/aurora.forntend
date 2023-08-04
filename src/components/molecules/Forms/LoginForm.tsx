@@ -1,17 +1,26 @@
 import React, { useState } from 'react'
-import { useUserDispatch } from '../../../app/hooks';
+import { useUserDispatch, useUserSelector } from '../../../app/hooks';
 import { updateUserState } from '../../../features/users/user-slice';
 import { Link } from 'react-router-dom';
 import bgimg from '../../../assets/st.jpeg';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
+import { tokenToString } from 'typescript';
+import { useSelector } from 'react-redux';
+
 
 
 
 const LoginForm=()=> {
 
+  let navigate =useNavigate();
+
   const [user, setUser] = useState({
     username: '',
     password: '',
   });
+
+  const userr=useUserSelector((state)=>(state.user))
 
   
 
@@ -32,7 +41,7 @@ const LoginForm=()=> {
   };
 
 
-  function handleSubmit(e:any){
+  async function handleSubmit(e:any){
     e.preventDefault()
 
     if (!user.username.trim() || !user.password.trim()) {
@@ -41,11 +50,33 @@ const LoginForm=()=> {
       return; // Stop the function here to prevent further execution
     }
 
-    dispatch(updateUserState({...user, token:''}));
+    const postData={
+      username: user.username,
+      password: user.password
+
+    }
+
+    try {
+
+  
+      const response = await axios.post('http://localhost:5000/auth/login', postData);
+      console.log('Response: ', response.data);
+      const token=response.data;
+      dispatch(updateUserState({...user, token:token}));
+      console.log("token", token )
+      console.log("User react state", userr )
+      navigate("/dashboard")
+    } catch (error) {
+      // Handle errors, if any
+      console.error('Error: ', error);
+    }
+
     setUser({
       username: '',
       password: '',
     });
+
+    
 
   }
 
@@ -68,7 +99,7 @@ const LoginForm=()=> {
         <button className='border w-full my-5 py-2 bg-indigo-600 hover:bg-indigo-400 text-white'  onClick={handleSubmit}>Sign In</button>
         <div className='flex justify-between'>
           <p className='flex-items-center'><input className='mr-2' type='checkbox'/> Remember me</p>
-          <Link to='/register' >Create an account</Link>
+          <Link to='/signup' >Create an account</Link>
         </div>
       </form>
     </div>

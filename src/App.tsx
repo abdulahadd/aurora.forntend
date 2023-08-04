@@ -7,6 +7,7 @@ import {
   Route
 } from "react-router-dom";
 import SignUp from './components/pages/SignUp';
+import DashBoard from './components/pages/DashBoard';
 // test
 
 function App() {
@@ -14,8 +15,9 @@ function App() {
     <Router>
     <div className="App">
       <Routes>
-        <Route path='/' element={<Login/>}/>
-        <Route path='/register' element={<SignUp/>}/>
+        <Route path='/login' element={<Login/>}/>
+        <Route path='/signup' element={<SignUp/>}/>
+        <Route path='/dashboard' element={<DashBoard/>}/>
       </Routes>
       
     </div>

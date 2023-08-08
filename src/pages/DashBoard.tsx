@@ -4,8 +4,10 @@ import { Outlet } from 'react-router-dom';
 import { useUserSelector } from '../redux/redux-hooks/hooks';
 import SideBar from '../components/organisms/SideBar';
 import NotificationPanel from '../components/organisms/NotificationPanel';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ListIcon from '@mui/icons-material/List';
+import { ToastContainer, toast } from 'react-toastify';
+import 'react-toastify/dist/ReactToastify.css';
 
 
 
@@ -20,6 +22,14 @@ function DashBoard() {
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
   };
+
+  useEffect(() => {
+    if(userr.token){
+      toast.success('Success Notification !', {
+        position: toast.POSITION.TOP_RIGHT
+    });
+    }
+  },[])
   
 
 
@@ -39,6 +49,7 @@ function DashBoard() {
               />
       <Outlet/>
       </div>
+      <ToastContainer />
     </div> 
    
   )

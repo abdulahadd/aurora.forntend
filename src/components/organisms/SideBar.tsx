@@ -39,7 +39,7 @@ const SideBar: React.FC<SideBarProps> = ({role, isOpen, toggleSidebar}) => {
                 <ul className="p-4 space-y-4">
                     <li className=' flex items-center space-x-2 '>
                         <HomeIcon/>
-                        <Link to='/' className="hover:text-red-200 text-xl" >Home</Link>
+                        <Link to='/dashboard' className="hover:text-red-200 text-xl" >Home</Link>
                     </li>
                     
                     <li className=' flex items-center space-x-2 '>
@@ -48,7 +48,7 @@ const SideBar: React.FC<SideBarProps> = ({role, isOpen, toggleSidebar}) => {
                     </li>
                     <li className=' flex items-center space-x-2 '>
                         <PersonAddAltIcon/>
-                        <Link to='dashboard/unregistered' className="hover:text-red-200 text-xl" >Register Users</Link>
+                        <Link to=' unregistered' className="hover:text-red-200 text-xl" >Register Users</Link>
                     </li>
                     <li className=' flex items-center space-x-2 '>
                         <LogoutIcon/>

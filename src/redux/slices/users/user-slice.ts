@@ -4,12 +4,14 @@ interface userState{
     username: string;
     password: string;
     token: string;
+    role: string
 }
 
 const initialState:userState={
     username:'Abdul',
     password:'1234',
-    token:''
+    token:'',
+    role: ''
 
 }
 

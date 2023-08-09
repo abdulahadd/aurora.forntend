@@ -4,14 +4,16 @@ interface userState{
     username: string;
     password: string;
     token: string;
-    role: string
+    role: string;
+    isLoggedIn: boolean
 }
 
 const initialState:userState={
     username:'Abdul',
     password:'1234',
     token:'',
-    role: ''
+    role: '',
+    isLoggedIn:false
 
 }
 
@@ -24,6 +26,8 @@ const userSlice = createSlice({
             state.username=action.payload.username;
             state.password=action.payload.password;
             state.token=action.payload.token;
+            state.role=action.payload.role;
+            state.isLoggedIn=action.payload.isLoggedIn;
 
         }
 

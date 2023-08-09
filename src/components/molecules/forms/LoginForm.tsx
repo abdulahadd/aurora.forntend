@@ -31,8 +31,6 @@ const LoginForm=()=> {
   };
 
   useEffect(()=>{
-    const token="";
-    dispatch(updateUserState({...user, token:token, role:""}));
     console.log("use effect login form called")
     
 
@@ -64,7 +62,7 @@ const LoginForm=()=> {
       
       if(token?.length)
       {
-        dispatch(updateUserState({...user, token:token, role:role}));
+        dispatch(updateUserState({...user, token:token, role:role, isLoggedIn:true}));
       }
       
       console.log("token", token )

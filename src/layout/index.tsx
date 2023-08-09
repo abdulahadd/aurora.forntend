@@ -9,24 +9,18 @@ import 'react-toastify/dist/ReactToastify.css';
 const  Layout=()=> {
 
     const userr=useUserSelector((state)=>(state.user))
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    
 
     useEffect(() => {
 
       console.log("LAyout useeffect called")
-        if (userr.token !== "") {
-          setIsLoggedIn(true);
-          
-        } else {
-          setIsLoggedIn(false);
-        }
       }, [userr.token]);
 
     
 
     return(
         <div>
-          {isLoggedIn ? <LoggedLayout><DashBoard/></LoggedLayout> : <GuestLayout><Login/></GuestLayout>}
+          {userr.isLoggedIn ? <LoggedLayout><DashBoard/></LoggedLayout> : <GuestLayout><Login/></GuestLayout>}
         </div>
         
     );

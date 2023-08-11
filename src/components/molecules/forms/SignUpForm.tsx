@@ -144,10 +144,10 @@ const SignUpForm = (porps:SignUpProp) => {
 
     <div className='h-screen flex items-center justify-center bg-indigo-100'>
       <div className="flex h-5/6 w-5/6 bg-white">
-        <div className='flex items-center h-full w-7/12 justify-center bg-slate-400'>
-          <img className='w-full h-full' src={bgimg} alt='/'/>
+        <div className='flex items-center h-full w-7/12 justify-center '>
+          <img className='w-full ' src={bgimg} alt='/'/>
         </div>
-        <div className='bg-white flex items-center w-full md:w-5/12 justify-center'>
+        <div className='bg-purple-900 flex items-center w-full md:w-5/12 justify-center'>
           <form className='max-w-[410px] w-full mx-auto bg-slate-400 p-4 border-2 rounded-xl drop-shadow-xl' onSubmit={
           handleSubmit(onSubmit)
           } >

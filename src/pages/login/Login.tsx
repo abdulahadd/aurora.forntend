@@ -1,6 +1,6 @@
 
 
-import LoginForm from '../components/molecules/forms/LoginForm';
+import LoginForm from '../../components/molecules/forms/LoginForm';
 
 const Login = () => {
 

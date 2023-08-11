@@ -7,7 +7,7 @@ import UserCards from '../molecules/cards/user-cards/UserCards';
 function UnregisteredUsers() {
 
 
-    const userr=useUserSelector((state)=>(state.user))
+    const userr=useUserSelector((state)=>(state))
     const [loading, setLoading] = useState<boolean>(true);
     const [error, setError] = useState<boolean>(false)
     const [data, setData] = useState<UserData[]>([]);
@@ -15,6 +15,7 @@ function UnregisteredUsers() {
     useEffect(()=>{
   
       const fetchData = async () => {
+       
         try {
           const response = await axios.get<UserData>(`http://localhost:5000/users/all/${userr.username}`,{
             headers: {

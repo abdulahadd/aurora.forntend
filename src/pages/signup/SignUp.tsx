@@ -1,7 +1,7 @@
 
 import { useNavigate } from 'react-router-dom';
 import { useEffect, useState } from 'react';
-import SignUpForm from '../components/molecules/forms/SignUpForm';
+import SignUpForm from '../../components/molecules/forms/SignUpForm';
 
 
 

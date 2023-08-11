@@ -31,6 +31,7 @@ const LoginForm=()=> {
   };
 
   useEffect(()=>{
+
     console.log("use effect login form called")
     
 
@@ -87,19 +88,19 @@ const LoginForm=()=> {
 
     <div className='h-screen flex items-center justify-center bg-indigo-100'>
       <div className="flex h-5/6 w-5/6 bg-white">
-        <div className='flex items-center h-full w-7/12 justify-center bg-slate-400'>
-          <img className='w-full h-full' src={bgimg} alt='/'></img>
+        <div className='flex items-center h-full w-7/12 justify-center '>
+          <img className='w-full ' src={bgimg} alt='/'></img>
         </div>
-        <div className='bg-white flex items-center w-full md:w-5/12 justify-center'>
-        <form className='h-3/5 w-3/5 mx-auto p-4 border-2 rounded-xl bg-slate-400  mt-15 drop-shadow-xl' >
+        <div className='bg-purple-900 flex items-center w-full md:w-5/12 justify-center drop-shadow-2xl'>
+        <form className='h-3/5 w-3/5 mx-auto p-4 border-2 rounded-xl bg-white  mt-15 drop-shadow-xl' >
             <h2 className='text-4xl font-bold text-center py-8'>AURORA.</h2>
             <div className='flex flex-col py-2'>
               <label className='text-left py-2'>Username</label>
-              <input className='border p-2' value={user.username} onChange={handleUsernameChange} type='text'/>
+              <input className='border-2 p-2' value={user.username} onChange={handleUsernameChange} type='text'/>
             </div>
             <div className='flex flex-col py-2'>
               <label className='text-left pb-2'>Password</label>
-              <input className='border p-2' value={user.password} onChange={handlePasswordChange} type='password'/>
+              <input className='border-2 p-2' value={user.password} onChange={handlePasswordChange} type='password'/>
             </div>
             <button className=' w-full my-5 py-2 bg-purple-900 hover:bg-indigo-400 text-white'  onClick={handleSubmit}>Sign In</button>
             <div className='flex justify-between'>

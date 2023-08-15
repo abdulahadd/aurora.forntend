@@ -1,5 +1,4 @@
 import { Typography, Box, useTheme, colors } from "@mui/material";
-import { useTitleState } from "../../../context/title/TitleState";
 
 interface HeaderProps{
     title: string | null

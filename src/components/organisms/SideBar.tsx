@@ -14,12 +14,10 @@ import LogoutIcon from "@mui/icons-material/Logout";
 import ClearIcon from "@mui/icons-material/Clear";
 import MenuIcon from '@mui/icons-material/Menu';
 import profileimg from '../../assets/jpgs/man-using-laptop-.jpg'
-import { blue, grey } from "@mui/material/colors";
 import Item from "../atoms/items/Items";
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
-import { TitleContext } from "../../context/title/titleContext";
 import Header from "../molecules/headers/DashBoardHeader";
-import TitleState, { useTitleState } from "../../context/title/TitleState";
+
 
 
 interface SideBarProps {

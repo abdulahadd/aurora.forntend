@@ -40,7 +40,7 @@ const Item: React.FC<ItemProps> = ({
     console.log("click");
     const token = "";
     dispatch(updateUserState({ ...user, token: token, isLoggedIn: false }));
-    //{{navigate("/")}}
+    setTitle("Dashboard");
     
   };
   return (

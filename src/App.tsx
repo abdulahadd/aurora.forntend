@@ -11,13 +11,15 @@ import {
 
 import UnregisteredUsers from './components/organisms/UnregisteredUsers';
 import Layout from './layout';
-import Login from './pages/Login';
-import SignUp from './pages/SignUp';
-import DashBoard from './pages/DashBoard';
+import Login from './pages/login/Login';
+import SignUp from './pages/signup/SignUp';
+import DashBoard from './pages/dashboard/DashBoard';
+import TitleState from './context/title/TitleState';
 // test
 
 function App() {
   return (
+    
     <Router>
     <div className="App">
       <Routes>
@@ -31,6 +33,7 @@ function App() {
       
     </div>
     </Router>
+    
   );
 }
 

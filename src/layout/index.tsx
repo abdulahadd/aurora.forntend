@@ -1,38 +1,30 @@
-import React, { useEffect, useState } from 'react'
-import { useUserSelector } from '../redux/redux-hooks/hooks'
-import LoggedLayout from './logged/LoggedLayout';
-import GuestLayout from './guest/GuestLayout';
-import DashBoard from '../pages/DashBoard';
-import Login from '../pages/Login';
-import 'react-toastify/dist/ReactToastify.css';
+import { useEffect } from "react";
+import { useUserSelector } from "../redux/redux-hooks/hooks";
+import LoggedLayout from "./logged/LoggedLayout";
+import GuestLayout from "./guest/GuestLayout";
+import DashBoard from "../pages/dashboard/DashBoard";
+import Login from "../pages/login/Login";
+import "react-toastify/dist/ReactToastify.css";
 
-const  Layout=()=> {
 
-    const userr=useUserSelector((state)=>(state.user))
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+const Layout = () => {
+  const userr = useUserSelector((state) => state);
 
-    useEffect(() => {
+  useEffect(() => {}, [userr.token]);
 
-      console.log("LAyout useeffect called")
-        if (userr.token !== "") {
-          setIsLoggedIn(true);
-          
-        } else {
-          setIsLoggedIn(false);
-        }
-      }, [userr.token]);
+  return (
+    <div>
+      {userr.isLoggedIn ? (
+        <LoggedLayout>
+          <DashBoard />
+        </LoggedLayout>
+      ) : (
+        <GuestLayout>
+          <Login />
+        </GuestLayout>
+      )}
+    </div>
+  );
+};
 
-    
-
-    return(
-        <div>
-          {isLoggedIn ? <LoggedLayout><DashBoard/></LoggedLayout> : <GuestLayout><Login/></GuestLayout>}
-        </div>
-        
-    );
-    
-
-  
-}
-
-export default Layout
+export default Layout;

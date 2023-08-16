@@ -19,6 +19,16 @@ export type PostData={
     isRegistered?:boolean
 }
 
+export type RecievedData={
+    username?: string,
+    email?:string,
+    password?:string,
+    age?:number,
+    orgId?:string,
+    role?:string,
+    isRegistered?:boolean
+}
+
 
 
 

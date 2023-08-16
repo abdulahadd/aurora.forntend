@@ -1,14 +1,10 @@
-
-
-import LoginForm from '../../components/molecules/forms/LoginForm';
+import LoginForm from "../../components/molecules/forms/LoginForm";
 
 const Login = () => {
-
   return (
-      <>
-        <LoginForm ></LoginForm>
-    
-      </>
+    <>
+      <LoginForm></LoginForm>
+    </>
   );
 };
 

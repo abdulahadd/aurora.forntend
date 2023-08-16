@@ -1,12 +1,7 @@
-import React, { ReactNode } from 'react'
+import React, { ReactNode } from "react";
 
-const GuestLayout = (props: {children:ReactNode}) => {
-    // Replace this with actual content for non-logged-in users
-    return (
-      <div>
-       {props.children}
-      </div>
-    );
-  };
-  
-  export default GuestLayout;
+const GuestLayout = (props: { children: ReactNode }) => {
+  return <div>{props.children}</div>;
+};
+
+export default GuestLayout;

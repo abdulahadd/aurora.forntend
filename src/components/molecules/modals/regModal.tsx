@@ -22,15 +22,11 @@ interface ModalProps {
   confirm: Dispatch<SetStateAction<boolean>>;
 }
 
-
-
 function RegModal(props: ModalProps) {
-
-    const handleClick= ()=> { 
-        props.confirm(true);
-        props.handleClose();
-
-    }
+  const handleClick = () => {
+    props.confirm(true);
+    props.handleClose();
+  };
   return (
     <div>
       <Modal
@@ -44,11 +40,17 @@ function RegModal(props: ModalProps) {
             Are you sure you want to register?
           </Typography>
           <div>
-            <button className="bg-green-500 hover:bg-green-700 text-white mr-2 font-bold py-2 px-4 rounded-full" onClick={handleClick}>
+            <button
+              className="bg-green-500 hover:bg-green-700 text-white mr-2 font-bold py-2 px-4 rounded-full"
+              onClick={handleClick}
+            >
               Yes
             </button>
 
-            <button className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full" onClick={props.handleClose}>
+            <button
+              className="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded-full"
+              onClick={props.handleClose}
+            >
               Cancel
             </button>
           </div>

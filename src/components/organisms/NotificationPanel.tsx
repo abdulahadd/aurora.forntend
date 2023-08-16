@@ -28,10 +28,9 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({
         </IconButton>
       </div>
 
-      {/* Icons */}
       <div>
         <IconButton type="button">
-          <NotificationsOutlinedIcon  />
+          <NotificationsOutlinedIcon />
         </IconButton>
         <IconButton type="button">
           <SettingsOutlinedIcon />

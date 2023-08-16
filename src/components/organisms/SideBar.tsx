@@ -6,19 +6,24 @@ import {
 } from "../../redux/redux-hooks/hooks";
 import { updateUserState } from "../../redux/slices/users/user-slice";
 import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
-import { Box, IconButton, Typography, colors, makeStyles, useTheme } from "@mui/material";
+import {
+  Box,
+  IconButton,
+  Typography,
+  colors,
+  makeStyles,
+  useTheme,
+} from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import LoginIcon from "@mui/icons-material/Login";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import LogoutIcon from "@mui/icons-material/Logout";
 import ClearIcon from "@mui/icons-material/Clear";
-import MenuIcon from '@mui/icons-material/Menu';
-import profileimg from '../../assets/jpgs/man-using-laptop-.jpg'
+import MenuIcon from "@mui/icons-material/Menu";
+import profileimg from "../../assets/jpgs/man-using-laptop-.jpg";
 import Item from "../atoms/items/Items";
 import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
 import Header from "../molecules/headers/DashBoardHeader";
-
-
 
 interface SideBarProps {
   role: string;
@@ -31,34 +36,28 @@ const SideBar: React.FC<SideBarProps> = ({ role, isOpen, toggleSidebar }) => {
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
 
-  
-
-
   return (
     <div className="flex h-full">
       <Sidebar collapsed={isCollapsed}>
-        <Menu >
-            <div onClick={()=> setIsCollapsed(!isCollapsed)}
+        <Menu>
+          <div
+            onClick={() => setIsCollapsed(!isCollapsed)}
             className=" bg-purple-900 mb-9 p-2.5 "
-            >
-              {isCollapsed? <MenuIcon sx={{ color: "white"}}/> : undefined}
-                { !isCollapsed && (
-                <div className=" flex justify-between items-center">
-                    <div className=" text-xl ml-5 text-gray-200" >
-                        {selected}
-                    </div>
-                    <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
-                        <MenuIcon sx={{ color: "white"}}/>
-                    </IconButton>
-                    
-                </div>)}
-
-            </div>
-
+          >
+            {isCollapsed ? <MenuIcon sx={{ color: "white" }} /> : undefined}
+            {!isCollapsed && (
+              <div className=" flex justify-between items-center">
+                <div className=" text-xl ml-5 text-gray-200">{selected}</div>
+                <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
+                  <MenuIcon sx={{ color: "white" }} />
+                </IconButton>
+              </div>
+            )}
+          </div>
 
           {!isCollapsed && (
-            <Box mb="25px" >
-              <Box display="flex"  alignItems=" left" ml="25px">
+            <Box mb="25px">
+              <Box display="flex" alignItems=" left" ml="25px">
                 <img
                   alt="profile-user"
                   width="100px"
@@ -83,7 +82,7 @@ const SideBar: React.FC<SideBarProps> = ({ role, isOpen, toggleSidebar }) => {
             </Box>
           )}
 
-<Box paddingLeft={isCollapsed ? undefined : "0%"}>
+          <Box paddingLeft={isCollapsed ? undefined : "0%"}>
             <Item
               title1="Dashboard"
               to="/dashboard"
@@ -99,31 +98,18 @@ const SideBar: React.FC<SideBarProps> = ({ role, isOpen, toggleSidebar }) => {
               selected={selected}
               setSelected={setSelected}
             />
-            {/* <Item
-              title1="Contacts Information"
-              to="contacts"
-              icon={<ContactsOutlinedIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            /> */}
+            
             <Item
               title1="Sign out"
               to="/"
-              icon={<LogoutIcon/>}
+              icon={<LogoutIcon />}
               selected={selected}
               setSelected={setSelected}
             />
-
           </Box>
-
-           
-
         </Menu>
       </Sidebar>
-
-      
-      </div>
-    
+    </div>
   );
 };
 

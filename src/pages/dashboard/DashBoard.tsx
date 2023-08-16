@@ -1,5 +1,3 @@
-//import React, { useEffect, useState } from 'react'
-
 import { Outlet } from "react-router-dom";
 import { useUserSelector } from "../../redux/redux-hooks/hooks";
 import SideBar from "../../components/organisms/SideBar";
@@ -15,7 +13,7 @@ function DashBoard() {
   const notifications = ["Notification 1", "Notification 2", "Notification 3"];
   const userr = useUserSelector((state) => state);
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const {title}=useTitleState();
+  const { title } = useTitleState();
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -30,47 +28,40 @@ function DashBoard() {
   }, []);
 
   return (
-    
-      <div className="flex bg-indigo-100">
-        {!sidebarOpen && (
-          <button onClick={toggleSidebar}>
-            <ListIcon />
-          </button>
-        )}
+    <div className="flex bg-indigo-100">
+      {!sidebarOpen && (
+        <button onClick={toggleSidebar}>
+          <ListIcon />
+        </button>
+      )}
 
-        {sidebarOpen && (
-          <div className="h-screen bg-grey">
-            <SideBar
-              toggleSidebar={toggleSidebar}
-              isOpen={sidebarOpen}
-              role={userr.role}
-            />
-          </div>
-        )}
-        <div className="flex flex-col flex-1">
-          <NotificationPanel
-            userLogoUrl="https://via.placeholder.com/100"
-            userName={userr.username}
-            notifications={notifications}
+      {sidebarOpen && (
+        <div className="h-screen bg-grey">
+          <SideBar
+            toggleSidebar={toggleSidebar}
+            isOpen={sidebarOpen}
+            role={userr.role}
           />
+        </div>
+      )}
+      <div className="flex flex-col flex-1">
+        <NotificationPanel
+          userLogoUrl="https://via.placeholder.com/100"
+          userName={userr.username}
+          notifications={notifications}
+        />
 
-          <div className=" m-5">
+        <div className=" m-5">
           <div className=" flex justify-between items-center">
-          <Header title={title} />
-
+            <Header title={title} />
           </div>
-
         </div>
 
-          <Outlet />
-        </div>
-
-        
-
-        <ToastContainer />
+        <Outlet />
       </div>
-      
-    
+
+      <ToastContainer />
+    </div>
   );
 }
 

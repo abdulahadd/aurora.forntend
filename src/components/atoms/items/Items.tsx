@@ -11,7 +11,7 @@ import {
 import { useContext } from "react";
 import { TitleContext } from "../../../context/title/titleContext";
 import { useTitleState } from "../../../context/title/TitleState";
-import PersistedState from "../types/redux/redux-types"
+import PersistedState from "../types/redux/redux-types";
 
 interface ItemProps {
   title1: string;
@@ -20,8 +20,6 @@ interface ItemProps {
   selected: string;
   setSelected: (value: string) => void;
 }
-
-
 
 const Item: React.FC<ItemProps> = ({
   title1,
@@ -33,16 +31,14 @@ const Item: React.FC<ItemProps> = ({
   const { setTitle } = useTitleState();
   const user = useUserSelector((state: PersistedState) => state);
   const dispatch = useUserDispatch();
-  const navigate=useNavigate();
-  
+  const navigate = useNavigate();
 
   const handleClick = () => {
-    console.log("click");
     const token = "";
     dispatch(updateUserState({ ...user, token: token, isLoggedIn: false }));
     setTitle("Dashboard");
-    
   };
+  
   return (
     <MenuItem
       component={<Link to={to} />}
@@ -54,13 +50,11 @@ const Item: React.FC<ItemProps> = ({
         if (title1 !== "Sign out") {
           setSelected(title1);
           setTitle(title1);
-          //navigate(to);
         } else {
           handleClick();
         }
       }}
       icon={icon}
-      
     >
       <h5 className=" text-left">{title1}</h5>
     </MenuItem>

@@ -24,7 +24,6 @@ function UserCards(props: CardProps) {
   const handleClose = () => setOpen(false);
 
   const registerUser = async () => {
-
     try {
       const response = await axios.patch(
         `http://localhost:5000/users/patch/${props.title}/${userr.username}`,
@@ -34,29 +33,24 @@ function UserCards(props: CardProps) {
             Authorization: `Bearer ${userr.token}`,
           },
         }
-      ); // Replace with your API endpoint URL
-      //   setData(response.data)
-      console.log("response.data", response?.data);
+      );
+    
       props.registered(true);
       props.reloading(true);
     } catch (error) {
-      console.log("error", error);
+      alert(error);
     }
   };
 
   useEffect(() => {
-    if(confirmation)
-    {
+    if (confirmation) {
       registerUser();
     }
-  
-  
-}, [confirmation])
+  }, [confirmation]);
 
-  const onClickHandler= ()=>{
+  const onClickHandler = () => {
     handleOpen();
-
-  }
+  };
 
   return (
     <>
@@ -79,7 +73,11 @@ function UserCards(props: CardProps) {
         </div>
       </div>
 
-      <RegModal handleClose={handleClose} open={open} confirm={setConfirmation}/>
+      <RegModal
+        handleClose={handleClose}
+        open={open}
+        confirm={setConfirmation}
+      />
     </>
   );
 }

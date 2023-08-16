@@ -1,5 +1,5 @@
 import axios from "axios";
-import React, { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { RecievedData, UserData } from "../atoms/types/user/userData";
 import { useUserSelector } from "../../redux/redux-hooks/hooks";
 import UserCards from "../molecules/cards/user-cards/UserCards";
@@ -25,22 +25,17 @@ function UnregisteredUsers() {
         }
       );
       response?.data.map((user) => {
-        // console.log("hello", user);
         if (user.isRegistered === false) {
           users.push(user);
-          // console.log("Users", users);
         }
       });
 
       if (users?.length) {
         setData(users);
-        console.log("Users", users);
         setLoading(false);
-        //setReloading(true);
       } else {
         setReloading(true);
         alert("No unregistered users");
-        
       }
     } catch (error) {
       setLoading(false);
@@ -48,18 +43,15 @@ function UnregisteredUsers() {
     }
   };
 
+
   useEffect(() => {
     fetchData();
-
     setRegistered(false);
-    console.log("Unregistered Users useEffect called");
-    if (data?.length >1)
-    {
-      console.log("data?.length", data.length)
+    if (data?.length > 1) {
       setReloading(false);
     }
-    
   }, [reloading]);
+
 
   if (loading) {
     return <div>Loading...</div>;

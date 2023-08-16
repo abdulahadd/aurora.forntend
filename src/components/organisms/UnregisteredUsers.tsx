@@ -38,7 +38,9 @@ function UnregisteredUsers() {
         setLoading(false);
         //setReloading(true);
       } else {
+        setReloading(true);
         alert("No unregistered users");
+        
       }
     } catch (error) {
       setLoading(false);
@@ -51,7 +53,12 @@ function UnregisteredUsers() {
 
     setRegistered(false);
     console.log("Unregistered Users useEffect called");
-    setReloading(false);
+    if (data?.length >1)
+    {
+      console.log("data?.length", data.length)
+      setReloading(false);
+    }
+    
   }, [reloading]);
 
   if (loading) {

@@ -91,13 +91,13 @@ const SideBar: React.FC<SideBarProps> = ({ role, isOpen, toggleSidebar }) => {
               setSelected={setSelected}
             />
 
-            <Item
+            {user.role==="SuperUser" &&(<Item
               title1="Manage Team"
               to="/dashboard/unregistered"
               icon={<PersonAddAltIcon />}
               selected={selected}
               setSelected={setSelected}
-            />
+            />)}
             
             <Item
               title1="Sign out"

@@ -51,6 +51,9 @@ function UnregisteredUsers() {
       setReloading(false);
     }
   }, [reloading]);
+  if(data?.length < 1){
+    return <div>No Unregistered Users</div>;
+  }
 
 
   if (loading) {

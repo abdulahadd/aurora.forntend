@@ -1,6 +1,6 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { RecievedData, UserData } from "../atoms/types/user/userData";
+import { RecievedData } from "../atoms/types/user/userData";
 import { useUserSelector } from "../../redux/redux-hooks/hooks";
 import UserCards from "../molecules/cards/user-cards/UserCards";
 

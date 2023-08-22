@@ -6,7 +6,7 @@ interface HeaderProps {
 
 const Header: React.FC<HeaderProps> = ({ title }) => {
   return (
-    <Box mb="30px">
+    <Box>
       <div className=" text-xl text-purple-900 mb-1">{title}</div>
     </Box>
   );

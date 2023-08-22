@@ -19,6 +19,8 @@
     "@types/react-dom": "^18.2.7",
     "axios": "^1.4.0",
     "react": "^18.2.0",
+    "react-big-calendar": "^1.8.2",
+    "react-datetime-picker": "^5.5.1",
     "react-dom": "^18.2.0",
     "react-hook-form": "^7.45.2",
     "react-icons": "^4.10.1",
@@ -58,6 +60,7 @@
     ]
   },
   "devDependencies": {
+    "@types/react-big-calendar": "^1.6.4",
     "@types/redux-persist": "^4.3.1",
     "babel": "@babel/plugin-proposal-private-property-in-object",
     "tailwindcss": "^3.3.3"

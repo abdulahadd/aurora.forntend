@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { Dispatch, SetStateAction, useState } from "react";
 import { Add } from "@mui/icons-material";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Event } from "../../atoms/types/events/eventTypes";
@@ -10,11 +10,20 @@ import 'react-clock/dist/Clock.css';
 
 type EventDate = Date | null;
 
+export interface EventProps {
+  title: string;
+  purpose: string;
+  showModal: boolean
+  setShowModal: Dispatch<SetStateAction<boolean>>
+  setEventsUpdated: Dispatch<SetStateAction<boolean>>
+}
 
-export default function EventModal() {
-  const [showModal, setShowModal] = useState(false);
-  const [startDateTime, setStartDateTime] = useState<EventDate>(new Date());
-  const [endDateTime, setendDateTime] = useState<EventDate>(new Date());
+
+
+export default function EventModal(props: EventProps) {
+
+  const [startDateTime, setStartDateTime] = useState<EventDate>(null);
+  const [endDateTime, setendDateTime] = useState<EventDate>(null);
   const {
     register,
     handleSubmit,
@@ -35,26 +44,47 @@ export default function EventModal() {
       }
   };
 
+  const patchRequest = async (data: any, title: string) => {
+    console.log("title", title);
+    try {
+      const response = await axios.patch(
+        `http://localhost:5000/events/${title}`,
+        data
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   const onSubmit: SubmitHandler<Event> = (data) => {
-    const obj = { ...data, start: startDateTime, end: endDateTime }
-    postRequest(obj);
+    let obj;
+    if(data.title!==""){
+      obj = { ...data, start: startDateTime, end: endDateTime }
+    }
+    else
+    obj = { start: startDateTime, end: endDateTime }
+      
+    if(props.purpose==="Create Event")
+    {
+      postRequest(obj);
+      setStartDateTime(null);
+      setendDateTime(null);
+      props.setEventsUpdated(true)
+    }
+    else{
+      patchRequest(obj, props.title);
+      setStartDateTime(null);
+      setendDateTime(null);
+      props.setEventsUpdated(true)
+    }
     reset();
-    setShowModal(false)
+    props.setShowModal(false)
   };
 
   return (
     <>
-      <div className=" flex justify-start">
-        <button
-          className="bg-purple-900 text-white active:bg-purple-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 ml-1 mb-4"
-          type="button"
-          onClick={() => setShowModal(true)}
-        >
-          <Add />
-          Add Event
-        </button>
-      </div>
-      {showModal ? (
+      
+      {props.showModal ? (
         <>
           <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
             <div className="relative w-auto my-6 mx-auto max-w-3xl">
@@ -62,7 +92,7 @@ export default function EventModal() {
               <div className="border-0 rounded-lg shadow-lg relative flex flex-col w-full bg-white outline-none focus:outline-none">
                 {/*header*/}
                 <div className="flex items-start justify-between p-5 border-b border-solid border-slate-200 rounded-t">
-                  <h3 className="text-3xl font-semibold">Add Event</h3>
+                  <h3 className="text-3xl font-semibold">{props.purpose}</h3>
                 </div>
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
@@ -75,11 +105,11 @@ export default function EventModal() {
                       <label className="text-left">Title</label>
                       <input
                         className="border p-2  mt-2 mb-1"
-                        {...register("title", { required: true })}
+                        {...register("title",  { required: props?.purpose ==="Create Event" ? true: false })}
                         type="text"
                       />
                       <p className="text-left text-red-900 mb-2">
-                        {errors.title && "Title is required"}
+                        {errors.title && props.purpose==="Create Event" && "Title is required"}
                       </p>
                     </div>
                     <div className="flex flex-col py2">
@@ -88,7 +118,7 @@ export default function EventModal() {
                 
                     </div>
                     <div className="flex flex-col py2">
-                      <label className="text-left mb-2 mt-3">End Date</label>
+                      <label className="text-left mb-2 mt-2">End Date</label>
                       <DateTimePicker onChange={setendDateTime}  value={endDateTime}/>
                 
                     </div>
@@ -100,7 +130,7 @@ export default function EventModal() {
                   <button
                     className="text-red-500 background-transparent font-bold uppercase px-6 py-2 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                     type="button"
-                    onClick={() => setShowModal(false)}
+                    onClick={() => props.setShowModal(false)}
                   >
                     Close
                   </button>

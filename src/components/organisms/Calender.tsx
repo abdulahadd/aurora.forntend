@@ -17,13 +17,18 @@ const initialState: Event = {
   title: "Some title",
 };
 
+export enum Purposes{
+  "Create Event",
+  "Edit Event"
+}
+
 function Calender() {
   const userr = useUserSelector((state) => state);
   const [eventState, setEventState] = useState({
     events: [initialState],
   });
   const [showModal, setShowModal] = useState(false);
-  const [purpose, setPurpose] = useState("");
+  const [purpose, setPurpose] = useState(Purposes["Create Event"]);
   const [selectedTitle, setSelectedTitle] = useState("");
   const [eventsUpdated, setEventsUpdated]=useState(false);
 
@@ -107,13 +112,13 @@ function Calender() {
 
   const EditEvent = (data) => {
     const { title } = data;
-    setPurpose("Edit Event");
+    setPurpose(Purposes["Edit Event"]);
     setShowModal(true);
     setSelectedTitle(title);
   };
 
   const CreateEvent = () => {
-    setPurpose("Create Event");
+    setPurpose(Purposes["Create Event"]);
     setShowModal(true);
   };
 
@@ -129,7 +134,7 @@ function Calender() {
           Add Event
         </button>
       </div>
-      {purpose === "Create Event" ? (
+      {purpose === Purposes["Create Event"] ? (
         <EventModal
           title="None"
           purpose={purpose}

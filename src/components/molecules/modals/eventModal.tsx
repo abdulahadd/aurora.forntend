@@ -7,12 +7,13 @@ import DateTimePicker from "react-datetime-picker";
 import 'react-datetime-picker/dist/DateTimePicker.css';
 import 'react-calendar/dist/Calendar.css';
 import 'react-clock/dist/Clock.css';
+import { Purposes } from "../../organisms/Calender";
 
 type EventDate = Date | null;
 
 export interface EventProps {
   title: string;
-  purpose: string;
+  purpose: Purposes;
   showModal: boolean
   setShowModal: Dispatch<SetStateAction<boolean>>
   setEventsUpdated: Dispatch<SetStateAction<boolean>>
@@ -32,7 +33,7 @@ export default function EventModal(props: EventProps) {
   } = useForm<Event>();
   
 
-  const postRequest = async (data: Event) => {
+  const createEvent = async (data: Event) => {
     try {
         const response = await axios.post(
           "http://localhost:5000/events",
@@ -44,8 +45,7 @@ export default function EventModal(props: EventProps) {
       }
   };
 
-  const patchRequest = async (data: any, title: string) => {
-    console.log("title", title);
+  const editEvent = async (data: any, title: string) => {
     try {
       const response = await axios.patch(
         `http://localhost:5000/events/${title}`,
@@ -64,15 +64,15 @@ export default function EventModal(props: EventProps) {
     else
     obj = { start: startDateTime, end: endDateTime }
       
-    if(props.purpose==="Create Event")
+    if(props.purpose===Purposes["Create Event"])
     {
-      postRequest(obj);
+      createEvent(obj);
       setStartDateTime(null);
       setendDateTime(null);
       props.setEventsUpdated(true)
     }
     else{
-      patchRequest(obj, props.title);
+      editEvent(obj, props.title);
       setStartDateTime(null);
       setendDateTime(null);
       props.setEventsUpdated(true)
@@ -105,11 +105,11 @@ export default function EventModal(props: EventProps) {
                       <label className="text-left">Title</label>
                       <input
                         className="border p-2  mt-2 mb-1"
-                        {...register("title",  { required: props?.purpose ==="Create Event" ? true: false })}
+                        {...register("title",  { required: props?.purpose ===Purposes["Create Event"] ? true: false })}
                         type="text"
                       />
                       <p className="text-left text-red-900 mb-2">
-                        {errors.title && props.purpose==="Create Event" && "Title is required"}
+                        {errors.title && props.purpose===Purposes["Create Event"] && "Title is required"}
                       </p>
                     </div>
                     <div className="flex flex-col py2">

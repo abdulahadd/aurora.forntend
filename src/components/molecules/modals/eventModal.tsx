@@ -8,12 +8,13 @@ import 'react-datetime-picker/dist/DateTimePicker.css';
 import 'react-calendar/dist/Calendar.css';
 import 'react-clock/dist/Clock.css';
 
-type ValuePiece = Date | null;
-type Value = ValuePiece;
+type EventDate = Date | null;
+
 
 export default function EventModal() {
   const [showModal, setShowModal] = useState(false);
-  const [dateTime, setDateTime] = useState<Value>(new Date());
+  const [startDateTime, setStartDateTime] = useState<EventDate>(new Date());
+  const [endDateTime, setendDateTime] = useState<EventDate>(new Date());
   const {
     register,
     handleSubmit,
@@ -30,18 +31,15 @@ export default function EventModal() {
         );
   
       } catch (error) {
-        alert(error);
+        console.log(error);
       }
   };
 
   const onSubmit: SubmitHandler<Event> = (data) => {
-    const obj = { ...data, start: dateTime, end: dateTime }
-    console.log("data", obj);
+    const obj = { ...data, start: startDateTime, end: endDateTime }
     postRequest(obj);
     reset();
     setShowModal(false)
-    
-    
   };
 
   return (
@@ -86,7 +84,12 @@ export default function EventModal() {
                     </div>
                     <div className="flex flex-col py2">
                       <label className="text-left mb-2">Start Date</label>
-                      <DateTimePicker onChange={setDateTime}  value={dateTime}/>
+                      <DateTimePicker onChange={setStartDateTime}  value={startDateTime}/>
+                
+                    </div>
+                    <div className="flex flex-col py2">
+                      <label className="text-left mb-2 mt-3">End Date</label>
+                      <DateTimePicker onChange={setendDateTime}  value={endDateTime}/>
                 
                     </div>
                     

@@ -1,9 +1,9 @@
 
-type ValuePiece = Date | null;
+type EventDate = Date | null;
 export type Event={
 
-    start: ValuePiece,
-    end: ValuePiece,
+    start: EventDate,
+    end: EventDate,
     title: string,
 }
 

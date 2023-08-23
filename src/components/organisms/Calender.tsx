@@ -24,10 +24,10 @@ function Calender() {
 
   const fetchApi = async () => {
     let tempEvents: Event[] = [];
-    // let tempobj={title: "", start: moment().toDate(), end: moment().toDate()};
+
     try {
       const response = await axios.get<Event[]>(
-        `http://localhost:5000/events/all`,
+        `http://localhost:5000/events`,
         {
           headers: {
             Authorization: `Bearer ${userr.token}`,
@@ -42,7 +42,7 @@ function Calender() {
 
       setEventState({ events: tempEvents });
     } catch (error) {
-      alert(error);
+      console.log(error);
     }
   };
 
@@ -52,19 +52,18 @@ function Calender() {
 
   const onEventResize = (data) => {
     const { start, end } = data;
-    console.log("On event resize", data);
   };
 
   const patchRequest = async (data: any, title: string) => {
     console.log("title", title)
     try {
         const response = await axios.patch(
-          `http://localhost:5000/events/patch/${title}`,
+          `http://localhost:5000/events/${title}`,
           data
         );
   
       } catch (error) {
-        alert(error);
+        console.log(error);
       }
   };
 
@@ -106,7 +105,6 @@ function Calender() {
       events: updatedEvents,
     });
 
-    // alert(`${event.title} was dropped onto ${updatedEvent.start}`)
   };
 
   return (
@@ -120,8 +118,8 @@ function Calender() {
           events={eventState.events}
           localizer={localizer}
           onEventDrop={moveEvent}
-          // onEventResize={onEventResize}
-          // resizable
+          onEventResize={onEventResize}
+          resizable
           style={{ height: 600 }}
         />
       ) : null}

@@ -1,29 +1,22 @@
-import React, { useContext, useState } from "react";
-import { Link } from "react-router-dom";
+import React, { useState } from "react";
 import {
-  useUserDispatch,
   useUserSelector,
 } from "../../redux/redux-hooks/hooks";
-import { updateUserState } from "../../redux/slices/users/user-slice";
-import { Sidebar, Menu, MenuItem, SubMenu } from "react-pro-sidebar";
+import { Sidebar, Menu} from "react-pro-sidebar";
 import {
   Box,
   IconButton,
   Typography,
   colors,
-  makeStyles,
-  useTheme,
 } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
-import LoginIcon from "@mui/icons-material/Login";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import LogoutIcon from "@mui/icons-material/Logout";
-import ClearIcon from "@mui/icons-material/Clear";
 import MenuIcon from "@mui/icons-material/Menu";
 import profileimg from "../../assets/jpgs/man-using-laptop-.jpg";
 import Item from "../atoms/items/Items";
-import ContactsOutlinedIcon from "@mui/icons-material/ContactsOutlined";
-import Header from "../molecules/headers/DashBoardHeader";
+import { CalendarMonthOutlined } from "@mui/icons-material";
+
 
 interface SideBarProps {
   role: string;
@@ -91,18 +84,26 @@ const SideBar: React.FC<SideBarProps> = ({ role, isOpen, toggleSidebar }) => {
               setSelected={setSelected}
             />
 
-            <Item
+            {user.role==="SuperUser" &&(<Item
               title1="Manage Team"
               to="/dashboard/unregistered"
               icon={<PersonAddAltIcon />}
               selected={selected}
               setSelected={setSelected}
-            />
+            />)}
             
             <Item
               title1="Sign out"
               to="/"
               icon={<LogoutIcon />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
+            <Item
+              title1="Calender"
+              to="/dashboard/calender"
+              icon={<CalendarMonthOutlined />}
               selected={selected}
               setSelected={setSelected}
             />

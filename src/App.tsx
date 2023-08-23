@@ -15,6 +15,7 @@ import Login from './pages/login/Login';
 import SignUp from './pages/signup/SignUp';
 import DashBoard from './pages/dashboard/DashBoard';
 import TitleState from './context/title/TitleState';
+import Calender from './components/organisms/Calender';
 // test
 
 function App() {
@@ -28,6 +29,7 @@ function App() {
         <Route path='signup' element={<SignUp/>}/>
         <Route path='dashboard' element={<DashBoard/>}>
           <Route path='unregistered' element={<UnregisteredUsers />} />
+          <Route path='calender' element={<Calender/>} />
         </Route>
       </Routes>
       

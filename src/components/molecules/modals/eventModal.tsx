@@ -4,25 +4,22 @@ import { SubmitHandler, useForm } from "react-hook-form";
 import { Event } from "../../atoms/types/events/eventTypes";
 import axios from "axios";
 import DateTimePicker from "react-datetime-picker";
-import 'react-datetime-picker/dist/DateTimePicker.css';
-import 'react-calendar/dist/Calendar.css';
-import 'react-clock/dist/Clock.css';
-import { Purposes } from "../../organisms/Calender";
+import "react-datetime-picker/dist/DateTimePicker.css";
+import "react-calendar/dist/Calendar.css";
+import "react-clock/dist/Clock.css";
+import { DialogAction } from "../../organisms/Calender";
 
 type EventDate = Date | null;
 
 export interface EventProps {
   title: string;
-  purpose: Purposes;
-  showModal: boolean
-  setShowModal: Dispatch<SetStateAction<boolean>>
-  setEventsUpdated: Dispatch<SetStateAction<boolean>>
+  purpose: DialogAction;
+  showModal: boolean;
+  setShowModal: Dispatch<SetStateAction<boolean>>;
+  setEventsUpdated: Dispatch<SetStateAction<boolean>>;
 }
 
-
-
 export default function EventModal(props: EventProps) {
-
   const [startDateTime, setStartDateTime] = useState<EventDate>(null);
   const [endDateTime, setendDateTime] = useState<EventDate>(null);
   const {
@@ -31,18 +28,13 @@ export default function EventModal(props: EventProps) {
     formState: { errors },
     reset,
   } = useForm<Event>();
-  
 
   const createEvent = async (data: Event) => {
     try {
-        const response = await axios.post(
-          "http://localhost:5000/events",
-          data
-        );
-  
-      } catch (error) {
-        console.log(error);
-      }
+      const response = await axios.post("http://localhost:5000/events", data);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const editEvent = async (data: any, title: string) => {
@@ -58,32 +50,27 @@ export default function EventModal(props: EventProps) {
 
   const onSubmit: SubmitHandler<Event> = (data) => {
     let obj;
-    if(data.title!==""){
-      obj = { ...data, start: startDateTime, end: endDateTime }
-    }
-    else
-    obj = { start: startDateTime, end: endDateTime }
-      
-    if(props.purpose===Purposes["Create Event"])
-    {
+    if (data.title !== "") {
+      obj = { ...data, start: startDateTime, end: endDateTime };
+    } else obj = { start: startDateTime, end: endDateTime };
+
+    if (props.purpose === DialogAction.CREATE_EVENT) {
       createEvent(obj);
       setStartDateTime(null);
       setendDateTime(null);
-      props.setEventsUpdated(true)
-    }
-    else{
+      props.setEventsUpdated(true);
+    } else {
       editEvent(obj, props.title);
       setStartDateTime(null);
       setendDateTime(null);
-      props.setEventsUpdated(true)
+      props.setEventsUpdated(true);
     }
     reset();
-    props.setShowModal(false)
+    props.setShowModal(false);
   };
 
   return (
     <>
-      
       {props.showModal ? (
         <>
           <div className="justify-center items-center flex overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
@@ -105,24 +92,34 @@ export default function EventModal(props: EventProps) {
                       <label className="text-left">Title</label>
                       <input
                         className="border p-2  mt-2 mb-1"
-                        {...register("title",  { required: props?.purpose ===Purposes["Create Event"] ? true: false })}
+                        {...register("title", {
+                          required:
+                            props?.purpose === DialogAction.CREATE_EVENT
+                              ? true
+                              : false,
+                        })}
                         type="text"
                       />
                       <p className="text-left text-red-900 mb-2">
-                        {errors.title && props.purpose===Purposes["Create Event"] && "Title is required"}
+                        {errors.title &&
+                          props.purpose === DialogAction.CREATE_EVENT &&
+                          "Title is required"}
                       </p>
                     </div>
                     <div className="flex flex-col py2">
                       <label className="text-left mb-2">Start Date</label>
-                      <DateTimePicker onChange={setStartDateTime}  value={startDateTime}/>
-                
+                      <DateTimePicker
+                        onChange={setStartDateTime}
+                        value={startDateTime}
+                      />
                     </div>
                     <div className="flex flex-col py2">
                       <label className="text-left mb-2 mt-2">End Date</label>
-                      <DateTimePicker onChange={setendDateTime}  value={endDateTime}/>
-                
+                      <DateTimePicker
+                        onChange={setendDateTime}
+                        value={endDateTime}
+                      />
                     </div>
-                    
                   </form>
                 </div>
                 {/*footer*/}

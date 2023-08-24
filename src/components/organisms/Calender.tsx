@@ -17,9 +17,9 @@ const initialState: Event = {
   title: "Some title",
 };
 
-export enum Purposes{
-  "Create Event",
-  "Edit Event"
+export enum DialogAction {
+  CREATE_EVENT = "Create Event",
+  EDIT_EVENT = "Edit Event",
 }
 
 function Calender() {
@@ -28,9 +28,9 @@ function Calender() {
     events: [initialState],
   });
   const [showModal, setShowModal] = useState(false);
-  const [purpose, setPurpose] = useState(Purposes["Create Event"]);
+  const [purpose, setPurpose] = useState(DialogAction.CREATE_EVENT);
   const [selectedTitle, setSelectedTitle] = useState("");
-  const [eventsUpdated, setEventsUpdated]=useState(false);
+  const [eventsUpdated, setEventsUpdated] = useState(false);
 
   const fetchApi = async () => {
     let tempEvents: Event[] = [];
@@ -112,13 +112,13 @@ function Calender() {
 
   const EditEvent = (data) => {
     const { title } = data;
-    setPurpose(Purposes["Edit Event"]);
+    setPurpose(DialogAction.EDIT_EVENT);
     setShowModal(true);
     setSelectedTitle(title);
   };
 
   const CreateEvent = () => {
-    setPurpose(Purposes["Create Event"]);
+    setPurpose(DialogAction.CREATE_EVENT);
     setShowModal(true);
   };
 
@@ -134,7 +134,7 @@ function Calender() {
           Add Event
         </button>
       </div>
-      {purpose === Purposes["Create Event"] ? (
+      {purpose === DialogAction.CREATE_EVENT ? (
         <EventModal
           title="None"
           purpose={purpose}

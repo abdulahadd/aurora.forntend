@@ -1,4 +1,4 @@
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { Add } from "@mui/icons-material";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Event } from "../../atoms/types/events/eventTypes";
@@ -8,6 +8,8 @@ import "react-datetime-picker/dist/DateTimePicker.css";
 import "react-calendar/dist/Calendar.css";
 import "react-clock/dist/Clock.css";
 import { DialogAction } from "../../organisms/Calender";
+import { OrganisationType } from "../../atoms/types/Organisation/OrgData";
+import DropDown from "../../atoms/buttons/dropdowns/Dropdown";
 
 type EventDate = Date | null;
 
@@ -19,6 +21,11 @@ export interface EventProps {
   setEventsUpdated: Dispatch<SetStateAction<boolean>>;
 }
 
+export interface DDListing{
+  id: string,
+  name: string
+}
+
 export default function EventModal(props: EventProps) {
   const [startDateTime, setStartDateTime] = useState<EventDate>(null);
   const [endDateTime, setendDateTime] = useState<EventDate>(null);
@@ -28,6 +35,23 @@ export default function EventModal(props: EventProps) {
     formState: { errors },
     reset,
   } = useForm<Event>();
+
+  const [orgs, setOrgs] = useState<DDListing[]>();
+  const [selectOrga, setSelectOrga] = useState("Select");
+
+  const getOrgs = () => {
+    fetch("http://localhost:5000/org")
+      .then((response) => response.json())
+      .then((json) => {
+        const organizations: DDListing[]  = json.map((org) => ({id: org._id, name: org.name}));
+        setOrgs(organizations);
+      })
+      .catch((error) => alert(error));
+  };
+
+  useEffect(() => {
+    getOrgs();
+  }, []);
 
   const createEvent = async (data: Event) => {
     try {
@@ -69,6 +93,10 @@ export default function EventModal(props: EventProps) {
     props.setShowModal(false);
   };
 
+  const SelectHandler = (inputString: string, key: any) => {
+    
+  };
+
   return (
     <>
       {props.showModal ? (
@@ -84,7 +112,7 @@ export default function EventModal(props: EventProps) {
                 {/*body*/}
                 <div className="relative p-6 flex-auto">
                   <form
-                    className="max-w-[410px] w-full mx-auto p-4 border-2 rounded-xl drop-shadow-xl"
+                    className="max-w-[450px] flex flex-col  w-full mx-auto p-4 border-2 rounded-xl drop-shadow-xl"
                     onSubmit={handleSubmit(onSubmit)}
                     id="event-form"
                   >
@@ -120,6 +148,19 @@ export default function EventModal(props: EventProps) {
                         value={endDateTime}
                       />
                     </div>
+
+                    {props?.purpose === DialogAction.CREATE_EVENT && (<div className="flex flex-col py2">
+                      <label className="text-left  mt-2">Organisation</label>
+                      <div className="mb-5 w-full text-bottom flex flex-col items-center">
+                        <DropDown
+                          items={orgs}
+                          SelectHandler={SelectHandler}
+                          fieldType="orga"
+                          select={selectOrga}
+                          setSelect={setSelectOrga}
+                        />
+                      </div>
+                    </div>)}
                   </form>
                 </div>
                 {/*footer*/}

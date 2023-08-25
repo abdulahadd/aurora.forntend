@@ -7,6 +7,7 @@ import { RoleType } from "../../atoms/types/roles/RoleType";
 import { OrganisationType } from "../../atoms/types/Organisation/OrgData";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import { DDListing } from "../modals/eventModal";
 
 type SignUpProp = {
   setError: (value: boolean) => void;
@@ -33,38 +34,39 @@ const SignUpForm = (porps: SignUpProp) => {
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [roles, setRoles] = useState({
-    list: [],
-  });
-  const [orgs, setOrgs] = useState({
-    list: [],
-  });
+  const [roles, setRoles] = useState<DDListing[]>();
+  const [orgs, setOrgs] = useState<DDListing[]>();
 
   const effectCalled = useRef(false);
 
-  //---------------useEffect-------------------------------//
-
-  useEffect(() => {
-    if (effectCalled.current) return;
-
-    fetch("http://localhost:5000/roles")
-      .then((response) => response.json())
-      .then((json) => {
-        const roleNames = json.map(
-          (role: RoleType) => role.name !== "SuperUser" && role.name
-        );
-        setRoles({ list: roleNames });
-      })
-      .catch((error) => alert(error));
-
+  const getOrgs = () => {
     fetch("http://localhost:5000/org")
       .then((response) => response.json())
       .then((json) => {
-        const organizationNames = json.map((org: OrganisationType) => org.name);
-        setOrgs({ list: organizationNames });
+        const organizations: DDListing[] = json.map((org) => ({
+          id: org._id,
+          name: org.name,
+        }));
+        setOrgs(organizations);
       })
-      .catch((error) => alert(error));
-  }, []);
+      .catch((error) => console.log(error));
+  };
+
+  const getRoles = () => {
+    fetch("http://localhost:5000/roles")
+      .then((response) => response.json())
+      .then((json) => {
+        const roles: DDListing[] = json.map((role) => ({
+          name: role.name !== "SuperUser" && role.name,
+          id: role._id,
+        }));
+        setRoles(roles);
+      })
+      .catch((error) => console.log(error));
+  };
+
+  //---------------useEffect-------------------------------//
+
 
   const postRequest = async (obj: UserData) => {
     const postData: PostData = {
@@ -94,6 +96,14 @@ const SignUpForm = (porps: SignUpProp) => {
       position: toast.POSITION.TOP_CENTER,
     });
   };
+
+  useEffect(() => {
+    if (effectCalled.current) return;
+    getOrgs();
+    getRoles();
+
+    effectCalled.current=true;
+  }, []);
 
   const onSubmit: SubmitHandler<UserData> = (data) => {
     const obj = { ...userData, ...data };
@@ -178,7 +188,7 @@ const SignUpForm = (porps: SignUpProp) => {
               <label className="text-left ">Organisation</label>
               <div className="mb-1 w-full text-bottom flex flex-col items-center">
                 <DropDown
-                  items={orgs.list}
+                  items={orgs}
                   SelectHandler={SelectHandler}
                   fieldType="orga"
                   select={selectOrga}
@@ -191,7 +201,7 @@ const SignUpForm = (porps: SignUpProp) => {
               <label className="text-left mt-6">Register as</label>
               <div className=" mb-4 w-full text-bottom flex flex-col items-center">
                 <DropDown
-                  items={roles.list}
+                  items={roles}
                   SelectHandler={SelectHandler}
                   fieldType="role"
                   select={selectRole}

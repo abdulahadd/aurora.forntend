@@ -31,6 +31,7 @@ function Calender() {
   const [purpose, setPurpose] = useState(DialogAction.CREATE_EVENT);
   const [selectedTitle, setSelectedTitle] = useState("");
   const [eventsUpdated, setEventsUpdated] = useState(false);
+  
 
   const fetchApi = async () => {
     let tempEvents: Event[] = [];
@@ -54,6 +55,8 @@ function Calender() {
     } catch (error) {
       console.log(error);
     }
+
+    
   };
 
   useEffect(() => {

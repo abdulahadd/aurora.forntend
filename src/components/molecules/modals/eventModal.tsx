@@ -58,7 +58,6 @@ export default function EventModal(props: EventProps) {
           cat: user._id,
           key: user.username,
         }));
-        console.log("USERS: " , users)
         setorgUsers(users);
       })
       .catch((error) => alert(error));
@@ -74,7 +73,7 @@ export default function EventModal(props: EventProps) {
         }));
         setOrgs(organizations);
       })
-      .catch((error) => alert(error));
+      .catch((error) => console.log(error));
   };
 
   const preSelect = () => {
@@ -88,10 +87,9 @@ export default function EventModal(props: EventProps) {
           cat: user._id,
           key: user.username,
         }));
-        console.log("Selected Users", users);
         setSelectedUsers(users);
       })
-      .catch((error) => alert(error));
+      .catch((error) => console.log(error));
 
   };
 
@@ -165,7 +163,6 @@ export default function EventModal(props: EventProps) {
   };
 
   const onSelect = (selectedList, selectedItem) => {
-    console.log("Selected Users : ", selectedList);
     setSelectedUsers(selectedList);
   };
 

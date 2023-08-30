@@ -46,25 +46,26 @@ const LoginForm = () => {
         postData
       );
       const token = response.data.access_token;
-      //const role = response.data.payload.role;
+      const org = response.data.payload.orgId;
 
       try {
-        const role= await axios.get(`http://localhost:5000/roles/${response.data.payload.role}` )
+        const role = await axios.get(
+          `http://localhost:5000/roles/${response.data.payload.role}`
+        );
         if (token?.length) {
           dispatch(
             updateUserState({
               ...user,
               token: token,
               role: role.data.name,
+              orga: org,
               isLoggedIn: true,
             })
           );
         }
-        
       } catch (error) {
-        console.log(error); 
+        console.log(error);
       }
-
     } catch (error) {
       alert(error);
     }

@@ -4,6 +4,7 @@ export default interface userState{
     password: string;
     token: string;
     role: string;
+    orga: string;
     isLoggedIn: boolean
 }
 

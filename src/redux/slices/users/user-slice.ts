@@ -7,7 +7,7 @@ const initialState:userState={
     password:'1234',
     token:'',
     role: '',
-    orga: '',
+    orgId: '',
     isLoggedIn:false
 
 }
@@ -24,7 +24,7 @@ const userSlice = createSlice({
             state.password=action.payload.password;
             state.token=action.payload.token;
             state.role=action.payload.role;
-            state.orga=action.payload.orga;
+            state.orgId=action.payload.orgId;
             state.isLoggedIn=action.payload.isLoggedIn;
 
         }

@@ -118,7 +118,7 @@ const SignUpForm = (porps: SignUpProp) => {
     reset();
   };
 
-  const SelectHandler = (inputString: string, key: any) => {
+  const selectHandler = (inputString: string, key: any) => {
     const updatedUserData: any = { ...userData };
     updatedUserData[key] = inputString;
     setUserData(updatedUserData);
@@ -189,7 +189,7 @@ const SignUpForm = (porps: SignUpProp) => {
               <div className="mb-1 w-full text-bottom flex flex-col items-center">
                 <DropDown
                   items={orgs}
-                  SelectHandler={SelectHandler}
+                  selectHandler={selectHandler}
                   fieldType="orga"
                   select={selectOrga}
                   setSelect={setSelectOrga}
@@ -202,7 +202,7 @@ const SignUpForm = (porps: SignUpProp) => {
               <div className=" mb-4 w-full text-bottom flex flex-col items-center">
                 <DropDown
                   items={roles}
-                  SelectHandler={SelectHandler}
+                  selectHandler={selectHandler}
                   fieldType="role"
                   select={selectRole}
                   setSelect={setSelectRole}

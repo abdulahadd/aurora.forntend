@@ -77,7 +77,7 @@ export default function EventModal(props: EventProps) {
   };
 
   const preSelect = () => {
-    axios.get(`http://localhost:5000/users/by-ids`, {
+    axios.get(`http://localhost:5000/users/ids`, {
       params: {
         ids: props.resource?.users.join(','), // Convert array to comma-separated string
       },
@@ -97,7 +97,7 @@ export default function EventModal(props: EventProps) {
   useEffect(() => {
     getOrgs();
     if (userr.role !== "SuperUser") {
-      getUsers(userr.orga);
+      getUsers(userr.orgId);
     }
 
     if(props.purpose===DialogAction.EDIT_EVENT && props.showModal===true)
@@ -113,7 +113,7 @@ export default function EventModal(props: EventProps) {
     if (userr.role === "SuperUser") {
       obj = { ...data, orgId: orgID, users: users };
     } else {
-      obj = { ...data, orgId: userr.orga, users: users };
+      obj = { ...data, orgId: userr.orgId, users: users };
     }
 
     try {
@@ -157,7 +157,7 @@ export default function EventModal(props: EventProps) {
     props.setShowModal(false);
   };
 
-  const SelectHandler = (inputString: string, key: any) => {
+  const selectHandler = (inputString: string, key: any) => {
     setorgID(inputString);
     getUsers(inputString);
   };
@@ -228,7 +228,7 @@ export default function EventModal(props: EventProps) {
                           <div className="mb-5 w-full text-bottom flex flex-col items-center">
                             <DropDown
                               items={orgs}
-                              SelectHandler={SelectHandler}
+                              selectHandler={selectHandler}
                               fieldType="orga"
                               select={selectOrga}
                               setSelect={setSelectOrga}

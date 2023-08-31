@@ -58,7 +58,7 @@ const LoginForm = () => {
               ...user,
               token: token,
               role: role.data.name,
-              orga: org,
+              orgId: org,
               isLoggedIn: true,
             })
           );

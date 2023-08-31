@@ -41,7 +41,7 @@ function Calender() {
     try {
       const response = await axios.get(
         userr.role !== "SuperUser"
-          ? `http://localhost:5000/events/org/${userr.orga}`
+          ? `http://localhost:5000/events/org/${userr.orgId}`
           : `http://localhost:5000/events`,
         {
           headers: {

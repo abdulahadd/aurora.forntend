@@ -4,7 +4,7 @@ import { DDListing } from "../../../molecules/modals/eventModal";
 
 type DropdownProp = {
   items?: DDListing[];
-  SelectHandler: (item: string, key: string) => void;
+  selectHandler: (item: string, key: string) => void;
   fieldType: string;
   select: string;
   setSelect: (item: string) => void;
@@ -17,7 +17,7 @@ const DropDown = (props: DropdownProp) => {
     e.preventDefault();
     setIsOpen((prev) => !prev);
     props.setSelect(item.name);
-    props.SelectHandler(item.id, props.fieldType);
+    props.selectHandler(item.id, props.fieldType);
   };
 
   return (

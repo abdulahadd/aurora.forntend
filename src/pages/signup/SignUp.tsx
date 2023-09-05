@@ -13,7 +13,7 @@ const SignUp = () => {
   }, [error]);
 
   const handleNavigate = () => {
-    navigate("/login");
+    navigate("/");
   };
 
   return <SignUpForm setError={setError}></SignUpForm>;

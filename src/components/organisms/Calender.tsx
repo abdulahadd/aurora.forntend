@@ -11,10 +11,13 @@ import { Add } from "@mui/icons-material";
 
 const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop(Calendar);
+
+
 const initialState: Event = {
   start: moment().toDate(),
   end: moment().toDate(),
   title: "Some title",
+  resource: {id: "", users:[]}
 };
 
 export enum DialogAction {
@@ -29,15 +32,17 @@ function Calender() {
   });
   const [showModal, setShowModal] = useState(false);
   const [purpose, setPurpose] = useState(DialogAction.CREATE_EVENT);
-  const [selectedTitle, setSelectedTitle] = useState("");
+  const [selectedEvent, setSelectedEvent] = useState<Event>();
   const [eventsUpdated, setEventsUpdated] = useState(false);
 
-  const fetchApi = async () => {
+  const getOrgEvents = async () => {
     let tempEvents: Event[] = [];
 
     try {
-      const response = await axios.get<Event[]>(
-        `http://localhost:5000/events`,
+      const response = await axios.get(
+        userr.role !== "SuperUser"
+          ? `http://localhost:5000/events/org/${userr.orgId}`
+          : `http://localhost:5000/events`,
         {
           headers: {
             Authorization: `Bearer ${userr.token}`,
@@ -48,6 +53,7 @@ function Calender() {
         title: event.title,
         start: event.start ? new Date(event.start) : null,
         end: event.end ? new Date(event.end) : null,
+        resource: {id: event._id, users: event.users}
       }));
 
       setEventState({ events: tempEvents });
@@ -57,7 +63,7 @@ function Calender() {
   };
 
   useEffect(() => {
-    fetchApi();
+    getOrgEvents();
   }, [eventsUpdated]);
 
   const onEventResize = (data) => {
@@ -80,8 +86,8 @@ function Calender() {
     const duration = event.end.getTime() - event.start.getTime();
     const newEnd = new Date(start.getTime() + duration);
     const newEvent = {
-      start: start,
-      end: newEnd,
+      start: new Date(start),
+      end: new Date(newEnd),
     };
 
     patchRequest(newEvent, event.title);
@@ -114,7 +120,7 @@ function Calender() {
     const { title } = data;
     setPurpose(DialogAction.EDIT_EVENT);
     setShowModal(true);
-    setSelectedTitle(title);
+    setSelectedEvent(data);
   };
 
   const CreateEvent = () => {
@@ -124,16 +130,18 @@ function Calender() {
 
   return (
     <div>
-      <div className=" flex justify-start">
-        <button
-          className="bg-purple-900 text-white active:bg-purple-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 ml-1 mb-4"
-          type="button"
-          onClick={CreateEvent}
-        >
-          <Add />
-          Add Event
-        </button>
-      </div>
+      {userr.role === "Admin" || userr.role === "SuperUser" ? (
+        <div className=" flex justify-start">
+          <button
+            className="bg-purple-900 text-white active:bg-purple-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 ml-1 mb-4"
+            type="button"
+            onClick={CreateEvent}
+          >
+            <Add />
+            Add Event
+          </button>
+        </div>
+      ) : null}
       {purpose === DialogAction.CREATE_EVENT ? (
         <EventModal
           title="None"
@@ -141,14 +149,16 @@ function Calender() {
           showModal={showModal}
           setShowModal={setShowModal}
           setEventsUpdated={setEventsUpdated}
+          resource={null}
         ></EventModal>
       ) : (
         <EventModal
-          title={selectedTitle}
+          title={selectedEvent? selectedEvent.title: "" }
           purpose={purpose}
           showModal={showModal}
           setShowModal={setShowModal}
           setEventsUpdated={setEventsUpdated}
+          resource={selectedEvent? selectedEvent.resource: null}
         ></EventModal>
       )}
 
@@ -158,9 +168,21 @@ function Calender() {
           defaultView="month"
           events={eventState.events}
           localizer={localizer}
-          onEventDrop={moveEvent}
-          onEventResize={onEventResize}
-          onDoubleClickEvent={EditEvent}
+          onEventDrop={
+            userr.role === "Admin" || userr.role === "SuperUser"
+              ? moveEvent
+              : undefined
+          }
+          onEventResize={
+            userr.role === "Admin" || userr.role === "SuperUser"
+              ? onEventResize
+              : undefined
+          }
+          onDoubleClickEvent={
+            userr.role === "Admin" || userr.role === "SuperUser"
+              ? EditEvent
+              : undefined
+          }
           resizable
           style={{ height: 600 }}
         />

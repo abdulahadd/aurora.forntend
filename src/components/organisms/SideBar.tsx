@@ -1,14 +1,7 @@
 import React, { useState } from "react";
-import {
-  useUserSelector,
-} from "../../redux/redux-hooks/hooks";
-import { Sidebar, Menu} from "react-pro-sidebar";
-import {
-  Box,
-  IconButton,
-  Typography,
-  colors,
-} from "@mui/material";
+import { useUserSelector } from "../../redux/redux-hooks/hooks";
+import { Sidebar, Menu } from "react-pro-sidebar";
+import { Box, IconButton, Typography, colors } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -16,7 +9,6 @@ import MenuIcon from "@mui/icons-material/Menu";
 import profileimg from "../../assets/jpgs/man-using-laptop-.jpg";
 import Item from "../atoms/items/Items";
 import { CalendarMonthOutlined } from "@mui/icons-material";
-
 
 interface SideBarProps {
   role: string;
@@ -84,26 +76,28 @@ const SideBar: React.FC<SideBarProps> = ({ role, isOpen, toggleSidebar }) => {
               setSelected={setSelected}
             />
 
-            {user.role==="SuperUser" &&(<Item
-              title1="Manage Team"
-              to="/dashboard/unregistered"
-              icon={<PersonAddAltIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />)}
-            
-            <Item
-              title1="Sign out"
-              to="/"
-              icon={<LogoutIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />
+            {user.role === "SuperUser" && (
+              <Item
+                title1="Manage Team"
+                to="/dashboard/unregistered"
+                icon={<PersonAddAltIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            )}
 
             <Item
               title1="Calender"
               to="/dashboard/calender"
               icon={<CalendarMonthOutlined />}
+              selected={selected}
+              setSelected={setSelected}
+            />
+
+            <Item
+              title1="Sign out"
+              to="/"
+              icon={<LogoutIcon />}
               selected={selected}
               setSelected={setSelected}
             />

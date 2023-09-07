@@ -13,3 +13,11 @@ export type Event={
     resource: Resource
 }
 
+export type EventDetails={
+  start: EventDate,
+    end: EventDate,
+    title: string,
+    orgId: string,
+    users: string[]
+}
+

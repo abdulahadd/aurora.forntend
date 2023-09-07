@@ -8,16 +8,20 @@ import { Event } from "../atoms/types/events/eventTypes";
 import { useUserSelector } from "../../redux/redux-hooks/hooks";
 import EventModal from "../molecules/modals/eventModal";
 import { Add } from "@mui/icons-material";
+import SideBar from "./SideBar";
+import { ListItemIcon } from "@mui/material";
+import RightSidebar from "./RightSidebar";
+
+
 
 const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop(Calendar);
-
 
 const initialState: Event = {
   start: moment().toDate(),
   end: moment().toDate(),
   title: "Some title",
-  resource: {id: "", users:[]}
+  resource: { id: "", users: [] },
 };
 
 export enum DialogAction {
@@ -34,6 +38,8 @@ function Calender() {
   const [purpose, setPurpose] = useState(DialogAction.CREATE_EVENT);
   const [selectedEvent, setSelectedEvent] = useState<Event>();
   const [eventsUpdated, setEventsUpdated] = useState(false);
+  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [eventId, seteventId] = useState("");
 
   const getOrgEvents = async () => {
     let tempEvents: Event[] = [];
@@ -53,8 +59,9 @@ function Calender() {
         title: event.title,
         start: event.start ? new Date(event.start) : null,
         end: event.end ? new Date(event.end) : null,
-        resource: {id: event._id, users: event.users}
+        resource: { id: event._id, users: event.users },
       }));
+      
 
       setEventState({ events: tempEvents });
     } catch (error) {
@@ -128,6 +135,15 @@ function Calender() {
     setShowModal(true);
   };
 
+  const toggleSidebar = (data) => {
+    setSidebarOpen(!sidebarOpen);
+    if(!sidebarOpen)
+    {
+      seteventId(data.resource.id);
+      
+    }
+  };
+
   return (
     <div>
       {userr.role === "Admin" || userr.role === "SuperUser" ? (
@@ -142,6 +158,7 @@ function Calender() {
           </button>
         </div>
       ) : null}
+
       {purpose === DialogAction.CREATE_EVENT ? (
         <EventModal
           title="None"
@@ -153,40 +170,56 @@ function Calender() {
         ></EventModal>
       ) : (
         <EventModal
-          title={selectedEvent? selectedEvent.title: "" }
+          title={selectedEvent ? selectedEvent.title : ""}
           purpose={purpose}
           showModal={showModal}
           setShowModal={setShowModal}
           setEventsUpdated={setEventsUpdated}
-          resource={selectedEvent? selectedEvent.resource: null}
+          resource={selectedEvent ? selectedEvent.resource : null}
         ></EventModal>
       )}
 
-      {eventState.events.length > 0 ? (
-        <DnDCalendar
-          defaultDate={moment().toDate()}
-          defaultView="month"
-          events={eventState.events}
-          localizer={localizer}
-          onEventDrop={
-            userr.role === "Admin" || userr.role === "SuperUser"
-              ? moveEvent
-              : undefined
-          }
-          onEventResize={
-            userr.role === "Admin" || userr.role === "SuperUser"
-              ? onEventResize
-              : undefined
-          }
-          onDoubleClickEvent={
-            userr.role === "Admin" || userr.role === "SuperUser"
-              ? EditEvent
-              : undefined
-          }
-          resizable
-          style={{ height: 600 }}
-        />
-      ) : null}
+      <div className="flex">
+        <div className=" w-full">
+          {eventState.events.length > 0 ? (
+            <DnDCalendar
+              defaultDate={moment().toDate()}
+              defaultView="month"
+              events={eventState.events}
+              localizer={localizer}
+              onEventDrop={
+                userr.role === "Admin" || userr.role === "SuperUser"
+                  ? moveEvent
+                  : undefined
+              }
+              onEventResize={
+                userr.role === "Admin" || userr.role === "SuperUser"
+                  ? onEventResize
+                  : undefined
+              }
+              onDoubleClickEvent={
+                userr.role === "Admin" || userr.role === "SuperUser"
+                  ? EditEvent
+                  : undefined
+              }
+              onSelectEvent={toggleSidebar}
+              resizable
+              style={{ height: 700 }}
+            />
+          ) : null}
+        </div>
+
+        <div className="flex bg-indigo-100">
+          {sidebarOpen ? (
+            <div className="h-[700px] bg-grey">
+              <RightSidebar
+                isOpen={sidebarOpen}
+                currentEvent={eventId}
+              />
+            </div>
+          ) : null}
+        </div>
+      </div>
     </div>
   );
 }

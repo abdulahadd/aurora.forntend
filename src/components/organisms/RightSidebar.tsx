@@ -29,7 +29,7 @@ const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
 
   const getComments = () => {
     axios
-      .get(`http://localhost:5000/comments/event/${currentEvent}`)
+      .get(`${process.env.REACT_APP_COMMENTS_URL}event/${currentEvent}`)
       .then((response) => {
         const comment: CommentType[] = response.data;
         setComments(comment);
@@ -37,9 +37,9 @@ const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
       .catch((error) => console.log(error));
   };
 
-  const eventDetails = () => {
+  const getEventDetails = () => {
     axios
-      .get(`http://localhost:5000/events/${currentEvent}`)
+      .get(`${process.env.REACT_APP_EVENTS_URL}${currentEvent}`)
       .then((response) => {
         const event: EventDetails = response.data;
         setStartDate(format(new Date(response.data.start), "kk:mm a "));
@@ -53,11 +53,13 @@ const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
     const comment = {
       userId: user.username,
       eventId: currentEvent,
+      isActive: true,
       comment: addComment,
+      
     };
 
     axios
-      .post(`http://localhost:5000/comments`, comment)
+      .post(`${process.env.REACT_APP_COMMENTS_URL}`, comment)
       .then((response) => {
         setAddComment("");
         setifAdded(!ifAdded);
@@ -66,7 +68,7 @@ const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
   };
 
   useEffect(() => {
-    eventDetails();
+    getEventDetails();
     getComments();
   }, [ifAdded]);
 
@@ -77,7 +79,7 @@ const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
   const editHandler = async () => {
     try {
       const response = await axios.patch(
-        `http://localhost:5000/comments/${editComment?._id}`,
+        `${process.env.REACT_APP_COMMENTS_URL}${editComment?._id}`,
         { comment: addComment }
       );
       setAddComment("");
@@ -91,7 +93,7 @@ const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
   const deleteHandler = async (comment) => {
     try {
       const response = await axios.delete(
-        `http://localhost:5000/comments/${comment?._id}`
+        `${process.env.REACT_APP_COMMENTS_URL}${comment?._id}`
       );
       setifAdded(!ifAdded);
     } catch (error) {
@@ -124,20 +126,20 @@ const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
                   Comments
                 </h3>
                 {comments?.map((comment) => (
-                  <div className="space-y-4 mr-4" key={comment?._id}>
+                  comment && (<div className="space-y-4 mr-4" key={comment?._id}>
                     <div className="flex">
                       <div className="flex-shrink-0 mr-3">{/* img */}</div>
                       <div className="flex-1 border rounded-lg px-4 py-2 sm:px-6 sm:py-4 leading-relaxed mb-2">
                         <div className="flex justify-between">
                           <strong className=" mb-1 pr-12">
-                            {comment.userId}
+                            {comment?.userId}
                           </strong>
-                          {user.username === comment.userId && (
+                          {user.username === comment?.userId && (
                             <div>
                               <Edit
                                 fontSize="small"
                                 onClick={() => {
-                                  setAddComment(comment.comment);
+                                  setAddComment(comment?.comment);
                                   seteditComment(comment);
                                   setisEdit(true);
                                 }}
@@ -151,10 +153,10 @@ const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
                             </div>
                           )}
                         </div>
-                        <p className="text-sm">{comment.comment}</p>
+                        <p className="text-sm">{comment?.comment}</p>
                       </div>
                     </div>
-                  </div>
+                  </div>)
                 ))}
 
                 <div>

@@ -8,8 +8,6 @@ import { Event } from "../atoms/types/events/eventTypes";
 import { useUserSelector } from "../../redux/redux-hooks/hooks";
 import EventModal from "../molecules/modals/eventModal";
 import { Add } from "@mui/icons-material";
-import SideBar from "./SideBar";
-import { ListItemIcon } from "@mui/material";
 import RightSidebar from "./RightSidebar";
 
 

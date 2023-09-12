@@ -10,19 +10,22 @@ import { format } from "date-fns";
 import { CommentType } from "../atoms/types/comments/commentTypes";
 import { Edit } from "@mui/icons-material";
 import { Delete } from "@mui/icons-material";
-
+import moment from "moment";
 
 interface SideBarProps {
   currentEvent: string;
   isOpen: boolean;
 }
 
-const initialState: CommentType={
-  _id: '',
-  userId: '',
-  eventId: '',
-  comment: ''
-}
+const initialState: CommentType = {
+  _id: "",
+  userId: "",
+  eventId: "",
+  comment: "",
+  time:moment().toDate(),
+  isEdited:false
+
+};
 
 const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
   const user = useUserSelector((state) => state);
@@ -63,6 +66,8 @@ const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
       eventId: currentEvent,
       isActive: true,
       comment: addComment,
+      time: moment().toDate(),
+      isEdited: false,
     };
 
     axios
@@ -87,7 +92,7 @@ const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
     try {
       const response = await axios.patch(
         `${process.env.REACT_APP_COMMENTS_URL}${editComment?._id}`,
-        { comment: addComment }
+        { comment: addComment, time: moment().toDate(), isEdited: true }
       );
       setAddComment("");
       setifAdded(!ifAdded);
@@ -107,8 +112,6 @@ const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
       console.log(error);
     }
   };
-
-  
 
   return (
     <div className="flex h-[700px] w-[300px]">
@@ -142,9 +145,12 @@ const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
                           <div className="flex-shrink-0 mr-3">{/* img */}</div>
                           <div className="flex-1 border rounded-lg px-4 py-2 sm:px-6 sm:py-4 leading-relaxed mb-2">
                             <div className="flex justify-between">
-                              <strong className=" mb-1 pr-12">
-                                {comment?.userId}
-                              </strong>
+                              <div className="flex justify-start">
+                                <strong className=" mb-1 pr-2">
+                                  {comment?.userId}
+                                </strong>
+                                <small className="pt-1">{format(new Date(comment? comment.time: moment().toDate()), "kk:mm a ")}</small>
+                              </div>
                               {user.username === comment?.userId && (
                                 <div>
                                   <Edit
@@ -164,7 +170,8 @@ const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
                                 </div>
                               )}
                             </div>
-                            <p className="text-sm">{comment?.comment}</p>
+                            <p className="text-sm text-slate-800">{comment?.comment}</p>
+                            <div>{comment.isEdited? <small>Edited</small> : null}</div>
                           </div>
                         </div>
                       </div>
@@ -193,7 +200,7 @@ const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
         </Menu>
       </Sidebar>
     </div>
-  )
+  );
 };
 
 export default RightSidebar;

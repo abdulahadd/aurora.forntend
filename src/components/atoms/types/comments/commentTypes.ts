@@ -4,4 +4,6 @@ export type CommentType={
     userId: string;
     eventId: string;
     comment: string;
+    time: Date;
+    isEdited: boolean;
   }

@@ -41,3 +41,7 @@
   color: purple;
   font-weight: bold;
 }
+
+.slide-sidebar {
+  transform: translateX(0);
+}

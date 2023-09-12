@@ -9,8 +9,7 @@ import { useUserSelector } from "../../redux/redux-hooks/hooks";
 import EventModal from "../molecules/modals/eventModal";
 import { Add } from "@mui/icons-material";
 import RightSidebar from "./RightSidebar";
-
-
+import classNames from "classnames";
 
 const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop(Calendar);
@@ -59,7 +58,6 @@ function Calender() {
         end: event.end ? new Date(event.end) : null,
         resource: { id: event._id, users: event.users },
       }));
-      
 
       setEventState({ events: tempEvents });
     } catch (error) {
@@ -135,12 +133,14 @@ function Calender() {
 
   const toggleSidebar = (data) => {
     setSidebarOpen(!sidebarOpen);
-    if(!sidebarOpen)
-    {
+    if (!sidebarOpen) {
       seteventId(data.resource.id);
-      
     }
   };
+
+  const sidebarAnimationClasses = sidebarOpen
+    ? "translate-x-0 transition-transform ease-in-out duration-300"
+    : "translate-x-full transition-transform ease-in-out duration-300";
 
   return (
     <div>
@@ -207,15 +207,21 @@ function Calender() {
           ) : null}
         </div>
 
-        <div className="flex bg-indigo-100">
-          {sidebarOpen ? (
-            <div className="h-[700px] bg-grey">
-              <RightSidebar
-                isOpen={sidebarOpen}
-                currentEvent={eventId}
-              />
+        <div
+          className={`flex bg-indigo-100 transition-all duration-800 ${
+            sidebarOpen ? "max-w-[100%]" : "max-w-[0]"
+          }`}
+        >
+          {sidebarOpen && (
+            <div
+              className={
+                "h-[700px] bg-grey" +
+                classNames("slide-sidebar", sidebarAnimationClasses)
+              }
+            >
+              <RightSidebar isOpen={sidebarOpen} currentEvent={eventId} />
             </div>
-          ) : null}
+          )}
         </div>
       </div>
     </div>

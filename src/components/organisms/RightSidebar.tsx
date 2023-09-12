@@ -11,9 +11,17 @@ import { CommentType } from "../atoms/types/comments/commentTypes";
 import { Edit } from "@mui/icons-material";
 import { Delete } from "@mui/icons-material";
 
+
 interface SideBarProps {
   currentEvent: string;
   isOpen: boolean;
+}
+
+const initialState: CommentType={
+  _id: '',
+  userId: '',
+  eventId: '',
+  comment: ''
 }
 
 const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
@@ -22,7 +30,7 @@ const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
   const [eventDet, setEventDet] = useState<EventDetails>();
   const [startDate, setStartDate] = useState("");
   const [endDate, setEndDate] = useState("");
-  const [comments, setComments] = useState<CommentType[]>();
+  const [comments, setComments] = useState<CommentType[]>([initialState]);
   const [ifAdded, setifAdded] = useState(false);
   const [isEdit, setisEdit] = useState(false);
   const [editComment, seteditComment] = useState<CommentType>();
@@ -55,7 +63,6 @@ const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
       eventId: currentEvent,
       isActive: true,
       comment: addComment,
-      
     };
 
     axios
@@ -101,7 +108,9 @@ const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
     }
   };
 
-  return isOpen === true ? (
+  
+
+  return (
     <div className="flex h-[700px] w-[300px]">
       <Sidebar width="300px">
         <Menu>
@@ -125,39 +134,42 @@ const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
                 <h3 className="mb-4 text-lg font-semibold text-gray-900">
                   Comments
                 </h3>
-                {comments?.map((comment) => (
-                  comment && (<div className="space-y-4 mr-4" key={comment?._id}>
-                    <div className="flex">
-                      <div className="flex-shrink-0 mr-3">{/* img */}</div>
-                      <div className="flex-1 border rounded-lg px-4 py-2 sm:px-6 sm:py-4 leading-relaxed mb-2">
-                        <div className="flex justify-between">
-                          <strong className=" mb-1 pr-12">
-                            {comment?.userId}
-                          </strong>
-                          {user.username === comment?.userId && (
-                            <div>
-                              <Edit
-                                fontSize="small"
-                                onClick={() => {
-                                  setAddComment(comment?.comment);
-                                  seteditComment(comment);
-                                  setisEdit(true);
-                                }}
-                              />
-                              <Delete
-                                fontSize="small"
-                                onClick={() => {
-                                  deleteHandler(comment);
-                                }}
-                              />
+                {comments?.map(
+                  (comment) =>
+                    comment && (
+                      <div className="space-y-4 mr-4" key={comment?._id}>
+                        <div className="flex">
+                          <div className="flex-shrink-0 mr-3">{/* img */}</div>
+                          <div className="flex-1 border rounded-lg px-4 py-2 sm:px-6 sm:py-4 leading-relaxed mb-2">
+                            <div className="flex justify-between">
+                              <strong className=" mb-1 pr-12">
+                                {comment?.userId}
+                              </strong>
+                              {user.username === comment?.userId && (
+                                <div>
+                                  <Edit
+                                    fontSize="small"
+                                    onClick={() => {
+                                      setAddComment(comment?.comment);
+                                      seteditComment(comment);
+                                      setisEdit(true);
+                                    }}
+                                  />
+                                  <Delete
+                                    fontSize="small"
+                                    onClick={() => {
+                                      deleteHandler(comment);
+                                    }}
+                                  />
+                                </div>
+                              )}
                             </div>
-                          )}
+                            <p className="text-sm">{comment?.comment}</p>
+                          </div>
                         </div>
-                        <p className="text-sm">{comment?.comment}</p>
                       </div>
-                    </div>
-                  </div>)
-                ))}
+                    )
+                )}
 
                 <div>
                   <label>Add a comment</label>
@@ -181,7 +193,7 @@ const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
         </Menu>
       </Sidebar>
     </div>
-  ) : null;
+  )
 };
 
 export default RightSidebar;

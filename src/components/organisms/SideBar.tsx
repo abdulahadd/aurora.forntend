@@ -87,7 +87,7 @@ const SideBar: React.FC<SideBarProps> = ({ role, isOpen, toggleSidebar }) => {
             )}
 
             <Item
-              title1="Calender"
+              title1="Calendar"
               to="/dashboard/calender"
               icon={<CalendarMonthOutlined />}
               selected={selected}

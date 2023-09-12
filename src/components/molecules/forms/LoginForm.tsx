@@ -3,8 +3,9 @@ import { useUserDispatch } from "../../../redux/redux-hooks/hooks";
 import { updateUserState } from "../../../redux/slices/users/user-slice";
 import { Link } from "react-router-dom";
 import bgimg from "../../../assets/pngs/182-_converted_.png";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import "react-toastify/dist/ReactToastify.css";
+import { Alert } from "@mui/material";
 
 const LoginForm = () => {
   const [user, setUser] = useState({
@@ -66,8 +67,8 @@ const LoginForm = () => {
       } catch (error) {
         console.log(error);
       }
-    } catch (error) {
-      alert(error);
+    } catch (error:any) {
+      Alert(error.response.data.message);
     }
 
     setUser({

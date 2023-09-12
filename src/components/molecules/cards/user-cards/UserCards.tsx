@@ -22,6 +22,17 @@ function UserCards(props: CardProps) {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [organisation, setOrganisation]=useState("");
+
+  const getOrganisation= async ()=>{
+    try {
+      const response=await axios.get(`${process.env.REACT_APP_ORGANISATION_URL} ${props.description}`)
+      
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
 
   const registerUser = async () => {
     try {
@@ -46,6 +57,7 @@ function UserCards(props: CardProps) {
     if (confirmation) {
       registerUser();
     }
+    getOrganisation();
   }, [confirmation]);
 
   const onClickHandler = () => {
@@ -64,7 +76,7 @@ function UserCards(props: CardProps) {
           <div className="font-bold text-xl mb-2 text-left">{props.title}</div>
           <div className="flex justify-between">
             <p className="text-gray-700 text-base font-bold">
-              {props.description}
+              {organisation}
             </p>
             <Button variant="outlined" size="small" onClick={onClickHandler}>
               Register

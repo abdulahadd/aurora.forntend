@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useUserSelector } from "../../redux/redux-hooks/hooks";
 import { Sidebar, Menu } from "react-pro-sidebar";
 import { Box, IconButton, Typography, colors } from "@mui/material";
@@ -9,6 +9,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import profileimg from "../../assets/jpgs/man-using-laptop-.jpg";
 import Item from "../atoms/items/Items";
 import { CalendarMonthOutlined } from "@mui/icons-material";
+import axios from "axios";
 
 interface SideBarProps {
   role: string;
@@ -20,6 +21,23 @@ const SideBar: React.FC<SideBarProps> = ({ role, isOpen, toggleSidebar }) => {
   const user = useUserSelector((state) => state);
   const [isCollapsed, setIsCollapsed] = useState(false);
   const [selected, setSelected] = useState("Dashboard");
+  const [organisation, setOrganisation]=useState("");
+
+  const getOrganisation= async ()=>{
+    try {
+      const response=await axios.get(`${process.env.REACT_APP_ORGANISATION_URL}${user.orgId}`)
+      
+      setOrganisation(response.data.name);
+      
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    
+    getOrganisation();
+  }, []);
 
   return (
     <div className="flex h-full">
@@ -32,7 +50,7 @@ const SideBar: React.FC<SideBarProps> = ({ role, isOpen, toggleSidebar }) => {
             {isCollapsed ? <MenuIcon sx={{ color: "white" }} /> : undefined}
             {!isCollapsed && (
               <div className=" flex justify-between items-center">
-                <div className=" text-xl ml-5 text-gray-200">{selected}</div>
+                <div className=" text-xl ml-5 text-gray-200">{organisation}</div>
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   <MenuIcon sx={{ color: "white" }} />
                 </IconButton>

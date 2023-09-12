@@ -179,7 +179,7 @@ function Calender() {
 
       <div className="flex">
         <div className=" w-full">
-          {eventState.events.length > 0 ? (
+          
             <DnDCalendar
               defaultDate={moment().toDate()}
               defaultView="month"
@@ -204,7 +204,7 @@ function Calender() {
               resizable
               style={{ height: 700 }}
             />
-          ) : null}
+         
         </div>
 
         <div

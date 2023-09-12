@@ -25,7 +25,6 @@ function UserCards(props: CardProps) {
   const [organisation, setOrganisation]=useState("");
 
   const getOrganisation= async ()=>{
-    console.log("orgId", props.description);
     try {
       const response=await axios.get(`${process.env.REACT_APP_ORGANISATION_URL}${props.description}`)
       setOrganisation(response.data.name);

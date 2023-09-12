@@ -68,7 +68,7 @@ const LoginForm = () => {
         console.log(error);
       }
     } catch (error:any) {
-      Alert(error.response.data.message);
+      alert(error.response.data.message);
     }
 
     setUser({

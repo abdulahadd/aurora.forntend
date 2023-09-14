@@ -10,6 +10,8 @@ import EventModal from "../molecules/modals/eventModal";
 import { Add } from "@mui/icons-material";
 import RightSidebar from "./RightSidebar";
 import classNames from "classnames";
+import { useLocation } from "react-router-dom";
+import { Box } from "@mui/material";
 
 const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop(Calendar);
@@ -27,11 +29,16 @@ export enum DialogAction {
 }
 
 function Calender() {
+  const location = useLocation();
+  let data = false;
+  if (location) {
+    data = location.state;
+  }
   const userr = useUserSelector((state) => state);
   const [eventState, setEventState] = useState({
     events: [initialState],
   });
-  const [showModal, setShowModal] = useState(false);
+  const [showModal, setShowModal] = useState(data);
   const [purpose, setPurpose] = useState(DialogAction.CREATE_EVENT);
   const [selectedEvent, setSelectedEvent] = useState<Event>();
   const [eventsUpdated, setEventsUpdated] = useState(false);
@@ -144,6 +151,15 @@ function Calender() {
 
   return (
     <div>
+      <div className=" m-5">
+        <div className=" flex justify-between items-center">
+          <Box>
+            <div className=" items-start text-xl text-purple-900 mb-1">
+              Calendar
+            </div>
+          </Box>
+        </div>
+      </div>
       {userr.role === "Admin" || userr.role === "SuperUser" ? (
         <div className=" flex justify-start">
           <button
@@ -179,32 +195,30 @@ function Calender() {
 
       <div className="flex">
         <div className=" w-full">
-          
-            <DnDCalendar
-              defaultDate={moment().toDate()}
-              defaultView="month"
-              events={eventState.events}
-              localizer={localizer}
-              onEventDrop={
-                userr.role === "Admin" || userr.role === "SuperUser"
-                  ? moveEvent
-                  : undefined
-              }
-              onEventResize={
-                userr.role === "Admin" || userr.role === "SuperUser"
-                  ? onEventResize
-                  : undefined
-              }
-              onDoubleClickEvent={
-                userr.role === "Admin" || userr.role === "SuperUser"
-                  ? EditEvent
-                  : undefined
-              }
-              onSelectEvent={toggleSidebar}
-              resizable
-              style={{ height: 700 }}
-            />
-         
+          <DnDCalendar
+            defaultDate={moment().toDate()}
+            defaultView="month"
+            events={eventState.events}
+            localizer={localizer}
+            onEventDrop={
+              userr.role === "Admin" || userr.role === "SuperUser"
+                ? moveEvent
+                : undefined
+            }
+            onEventResize={
+              userr.role === "Admin" || userr.role === "SuperUser"
+                ? onEventResize
+                : undefined
+            }
+            onDoubleClickEvent={
+              userr.role === "Admin" || userr.role === "SuperUser"
+                ? EditEvent
+                : undefined
+            }
+            onSelectEvent={toggleSidebar}
+            resizable
+            style={{ height: 700 }}
+          />
         </div>
 
         <div

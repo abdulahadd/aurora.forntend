@@ -51,11 +51,7 @@ function DashBoard() {
           notifications={notifications}
         />
 
-        <div className=" m-5">
-          <div className=" flex justify-between items-center">
-            <Header title={title} />
-          </div>
-        </div>
+        
 
         <Outlet />
       </div>

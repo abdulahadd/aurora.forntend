@@ -88,7 +88,7 @@ const SideBar: React.FC<SideBarProps> = ({ role, isOpen, toggleSidebar }) => {
           <Box paddingLeft={isCollapsed ? undefined : "0%"}>
             <Item
               title1="Dashboard"
-              to="/dashboard"
+              to="/dashboard/defaultdashboard"
               icon={<HomeIcon />}
               selected={selected}
               setSelected={setSelected}

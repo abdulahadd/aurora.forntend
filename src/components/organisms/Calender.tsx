@@ -12,6 +12,7 @@ import RightSidebar from "./RightSidebar";
 import classNames from "classnames";
 import { useLocation } from "react-router-dom";
 import { Box } from "@mui/material";
+import { EVENT_API_PATHS } from "../atoms/paths/ApiPaths";
 
 const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop(Calendar);
@@ -51,8 +52,8 @@ function Calender() {
     try {
       const response = await axios.get(
         userr.role !== "SuperUser"
-          ? `http://localhost:5000/events/org/${userr.orgId}`
-          : `http://localhost:5000/events`,
+          ? `${process.env.REACT_APP_COMMENTS_URL}${EVENT_API_PATHS.GET_EVENTS_FOR_ORG}${userr.orgId}`
+          : `${process.env.REACT_APP_COMMENTS_URL}${EVENT_API_PATHS.GET_EVENTS}`,
         {
           headers: {
             Authorization: `Bearer ${userr.token}`,
@@ -84,7 +85,7 @@ function Calender() {
     console.log("title", title);
     try {
       const response = await axios.patch(
-        `http://localhost:5000/events/${title}`,
+        `${process.env.REACT_APP_COMMENTS_URL}${EVENT_API_PATHS.EDIT_EVENT}${title}`,
         data
       );
     } catch (error) {

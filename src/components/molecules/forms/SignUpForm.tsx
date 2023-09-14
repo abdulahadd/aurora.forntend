@@ -53,7 +53,7 @@ const SignUpForm = (porps: SignUpProp) => {
   };
 
   const getRoles = () => {
-    fetch("http://localhost:5000/roles")
+    fetch(`${process.env.REACT_APP_COMMENTS_URL}/roles`)
       .then((response) => response.json())
       .then((json) => {
         const roles: DDListing[] = json.map((role) => ({
@@ -81,7 +81,7 @@ const SignUpForm = (porps: SignUpProp) => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/users",
+        `${process.env.REACT_APP_COMMENTS_URL}/users`,
         postData
       );
 

@@ -11,6 +11,7 @@ import DropDown from "../../atoms/buttons/dropdowns/Dropdown";
 import { useUserSelector } from "../../../redux/redux-hooks/hooks";
 import Select from "react-select";
 import Multiselect from "multiselect-react-dropdown";
+import { EVENT_API_PATHS } from "../../atoms/paths/ApiPaths";
 
 type EventDate = Date | null;
 
@@ -117,7 +118,7 @@ export default function EventModal(props: EventProps) {
     }
 
     try {
-      const response = await axios.post("http://localhost:5000/events", obj);
+      const response = await axios.post(`${process.env.REACT_APP_COMMENTS_URL}${EVENT_API_PATHS.CREATE_EVENT}`, obj);
     } catch (error) {
       console.log(error);
     }
@@ -126,7 +127,7 @@ export default function EventModal(props: EventProps) {
   const editEvent = async (data: any, title: string) => {
     try {
       const response = await axios.patch(
-        `http://localhost:5000/events/${title}`,
+        `${process.env.REACT_APP_COMMENTS_URL}${EVENT_API_PATHS.EDIT_EVENT}${title}`,
         data
       );
     } catch (error) {

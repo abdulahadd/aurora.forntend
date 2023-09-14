@@ -6,6 +6,7 @@ import bgimg from "../../../assets/pngs/182-_converted_.png";
 import axios, { AxiosError } from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import { Alert } from "@mui/material";
+import { AUTH_API_PATHS } from "../../atoms/paths/ApiPaths";
 
 const LoginForm = () => {
   const [user, setUser] = useState({
@@ -43,7 +44,7 @@ const LoginForm = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:5000/auth/login",
+        `${process.env.REACT_APP_URL}${AUTH_API_PATHS.POST_LOGIN}`,
         postData
       );
       const token = response.data.access_token;
@@ -51,7 +52,7 @@ const LoginForm = () => {
 
       try {
         const role = await axios.get(
-          `http://localhost:5000/roles/${response.data.payload.role}`
+          `${process.env.REACT_APP_COMMENTS_URL}/roles/${response.data.payload.role}`
         );
         if (token?.length) {
           dispatch(

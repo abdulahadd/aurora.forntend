@@ -7,6 +7,7 @@ import { Box } from "@mui/material";
 import axios from "axios";
 import { Event } from "../atoms/types/events/eventTypes";
 import moment from "moment";
+import { EVENT_API_PATHS } from "../atoms/paths/ApiPaths";
 
 const initialState: Event = {
   start: moment().toDate(),
@@ -42,8 +43,8 @@ function DefaultDashboard() {
     try {
       const response = await axios.get(
         userr.role !== "SuperUser"
-          ? `http://localhost:5000/events/org/${userr.orgId}`
-          : `http://localhost:5000/events`,
+          ? `${process.env.REACT_APP_COMMENTS_URL}${EVENT_API_PATHS.GET_EVENTS_FOR_ORG}${userr.orgId}`
+          : `${process.env.REACT_APP_COMMENTS_URL}${EVENT_API_PATHS.GET_EVENTS}`,
         {
           headers: {
             Authorization: `Bearer ${userr.token}`,

@@ -16,6 +16,17 @@ const initialState: Event = {
   resource: { id: "", users: [] },
 };
 
+const tomorrow=new Date(moment().toDate());
+tomorrow.setDate(tomorrow.getDate() + 1);
+
+
+const initialStateTomorrow: Event = {
+  start: tomorrow,
+  end: moment().toDate(),
+  title: "No Events",
+  resource: { id: "", users: [] },
+};
+
 function DefaultDashboard() {
   const userr = useUserSelector((state) => state);
   const navigate = useNavigate();
@@ -24,7 +35,7 @@ function DefaultDashboard() {
   });
 
   const [tomorrowsEventState, setTomorrowsEventState] = useState({
-    events: [initialState],
+    events: [initialStateTomorrow],
   });
 
   const datesAreEqual = (date1: Date, date2: Date) => {
@@ -43,8 +54,8 @@ function DefaultDashboard() {
     try {
       const response = await axios.get(
         userr.role !== "SuperUser"
-          ? `${process.env.REACT_APP_COMMENTS_URL}${EVENT_API_PATHS.GET_EVENTS_FOR_ORG}${userr.orgId}`
-          : `${process.env.REACT_APP_COMMENTS_URL}${EVENT_API_PATHS.GET_EVENTS}`,
+          ? `${process.env.REACT_APP_URL}${EVENT_API_PATHS.GET_EVENTS_FOR_ORG}${userr.orgId}`
+          : `${process.env.REACT_APP_URL}${EVENT_API_PATHS.GET_EVENTS}`,
         {
           headers: {
             Authorization: `Bearer ${userr.token}`,

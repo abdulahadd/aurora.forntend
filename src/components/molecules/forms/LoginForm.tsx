@@ -52,7 +52,7 @@ const LoginForm = () => {
 
       try {
         const role = await axios.get(
-          `${process.env.REACT_APP_COMMENTS_URL}/roles/${response.data.payload.role}`
+          `${process.env.REACT_APP_URL}/roles/${response.data.payload.role}`
         );
         if (token?.length) {
           dispatch(

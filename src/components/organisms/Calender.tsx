@@ -52,8 +52,8 @@ function Calender() {
     try {
       const response = await axios.get(
         userr.role !== "SuperUser"
-          ? `${process.env.REACT_APP_COMMENTS_URL}${EVENT_API_PATHS.GET_EVENTS_FOR_ORG}${userr.orgId}`
-          : `${process.env.REACT_APP_COMMENTS_URL}${EVENT_API_PATHS.GET_EVENTS}`,
+          ? `${process.env.REACT_APP_URL}${EVENT_API_PATHS.GET_EVENTS_FOR_ORG}${userr.orgId}`
+          : `${process.env.REACT_APP_URL}${EVENT_API_PATHS.GET_EVENTS}`,
         {
           headers: {
             Authorization: `Bearer ${userr.token}`,
@@ -85,7 +85,7 @@ function Calender() {
     console.log("title", title);
     try {
       const response = await axios.patch(
-        `${process.env.REACT_APP_COMMENTS_URL}${EVENT_API_PATHS.EDIT_EVENT}${title}`,
+        `${process.env.REACT_APP_URL}${EVENT_API_PATHS.EDIT_EVENT}${title}`,
         data
       );
     } catch (error) {

@@ -18,7 +18,7 @@ function UnregisteredUsers() {
 
     try {
       const response = await axios.get<RecievedData[]>(
-        `${process.env.REACT_APP_COMMENTS_URL}/users/all/${userr.username}`,
+        `${process.env.REACT_APP_URL}/users/all/${userr.username}`,
         {
           headers: {
             Authorization: `Bearer ${userr.token}`,

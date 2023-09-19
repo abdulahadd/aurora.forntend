@@ -10,6 +10,8 @@ import profileimg from "../../assets/jpgs/man-using-laptop-.jpg";
 import Item from "../atoms/items/Items";
 import { CalendarMonthOutlined } from "@mui/icons-material";
 import axios from "axios";
+import { getRequest } from "../atoms/api/Apis";
+import { ORG_API_PATHS } from "../atoms/paths/ApiPaths";
 
 interface SideBarProps {
   role: string;
@@ -20,22 +22,22 @@ interface SideBarProps {
 const SideBar: React.FC<SideBarProps> = ({ role, isOpen, toggleSidebar }) => {
   const user = useUserSelector((state) => state);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [selected, setSelected] = useState("Dashboard");
-  const [organisation, setOrganisation]=useState("");
+  const [selected, setSelected] = useState("/dashboard/defaultdashboard");
+  const [organisation, setOrganisation] = useState("");
 
-  const getOrganisation= async ()=>{
+  const getOrganisation = async () => {
     try {
-      const response=await axios.get(`${process.env.REACT_APP_ORGANISATION_URL}${user.orgId}`)
-      
+      const response = await getRequest(
+        `${ORG_API_PATHS.GET_ONE}${user.orgId}`
+      );
+
       setOrganisation(response.data.name);
-      
     } catch (error) {
-      console.log(error)
+      console.log(error);
     }
-  }
+  };
 
   useEffect(() => {
-    
     getOrganisation();
   }, []);
 
@@ -50,7 +52,9 @@ const SideBar: React.FC<SideBarProps> = ({ role, isOpen, toggleSidebar }) => {
             {isCollapsed ? <MenuIcon sx={{ color: "white" }} /> : undefined}
             {!isCollapsed && (
               <div className=" flex justify-between items-center">
-                <div className=" text-xl ml-5 text-gray-200">{organisation}</div>
+                <div className=" text-xl ml-5 text-gray-200">
+                  {organisation}
+                </div>
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   <MenuIcon sx={{ color: "white" }} />
                 </IconButton>

@@ -8,6 +8,7 @@ import { OrganisationType } from "../../atoms/types/Organisation/OrgData";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { DDListing } from "../modals/eventModal";
+import { postRequest } from "../../atoms/api/Apis";
 
 type SignUpProp = {
   setError: (value: boolean) => void;
@@ -53,7 +54,7 @@ const SignUpForm = (porps: SignUpProp) => {
   };
 
   const getRoles = () => {
-    fetch(`${process.env.REACT_APP_COMMENTS_URL}/roles`)
+    fetch(`${process.env.REACT_APP_URL}/roles`)
       .then((response) => response.json())
       .then((json) => {
         const roles: DDListing[] = json.map((role) => ({
@@ -68,7 +69,7 @@ const SignUpForm = (porps: SignUpProp) => {
   //---------------useEffect-------------------------------//
 
 
-  const postRequest = async (obj: UserData) => {
+  const postReq = async (obj: UserData) => {
     const postData: PostData = {
       username: obj.username,
       email: obj.email,
@@ -80,8 +81,8 @@ const SignUpForm = (porps: SignUpProp) => {
     };
 
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_COMMENTS_URL}/users`,
+      const response = await postRequest(
+        `/users`,
         postData
       );
 
@@ -107,7 +108,7 @@ const SignUpForm = (porps: SignUpProp) => {
 
   const onSubmit: SubmitHandler<UserData> = (data) => {
     const obj = { ...userData, ...data };
-    postRequest(obj);
+    postReq(obj);
     if (!!errors) {
       porps.setError(false);
     }

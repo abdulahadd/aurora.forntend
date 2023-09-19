@@ -1,15 +1,12 @@
-import { useTheme } from "@emotion/react";
-import { Typography, colors } from "@mui/material";
-import exp from "constants";
+
+import {  colors } from "@mui/material";
 import { MenuItem } from "react-pro-sidebar";
-import { Link, redirect, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { updateUserState } from "../../../redux/slices/users/user-slice";
 import {
   useUserDispatch,
   useUserSelector,
 } from "../../../redux/redux-hooks/hooks";
-import { useContext } from "react";
-import { TitleContext } from "../../../context/title/titleContext";
 import { useTitleState } from "../../../context/title/TitleState";
 import PersistedState from "../types/redux/redux-types";
 
@@ -32,6 +29,8 @@ const Item: React.FC<ItemProps> = ({
   const user = useUserSelector((state: PersistedState) => state);
   const dispatch = useUserDispatch();
   const navigate = useNavigate();
+
+  
 
   const handleClick = () => {
     const token = "";

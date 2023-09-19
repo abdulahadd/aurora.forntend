@@ -4,6 +4,7 @@ import { RecievedData } from "../atoms/types/user/userData";
 import { useUserSelector } from "../../redux/redux-hooks/hooks";
 import UserCards from "../molecules/cards/user-cards/UserCards";
 import { Box } from "@mui/material";
+import { getRequest } from "../atoms/api/Apis";
 
 function UnregisteredUsers() {
   const userr = useUserSelector((state) => state);
@@ -17,13 +18,8 @@ function UnregisteredUsers() {
     let users: RecievedData[] = [];
 
     try {
-      const response = await axios.get<RecievedData[]>(
-        `${process.env.REACT_APP_URL}/users/all/${userr.username}`,
-        {
-          headers: {
-            Authorization: `Bearer ${userr.token}`,
-          },
-        }
+      const response = await getRequest(
+        `/users/all/${userr.username}`,
       );
       response?.data.map((user) => {
         if (user.isRegistered === false) {

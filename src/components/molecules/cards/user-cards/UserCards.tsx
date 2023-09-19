@@ -4,6 +4,7 @@ import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useUserSelector } from "../../../../redux/redux-hooks/hooks";
 import RegModal from "../../modals/regModal";
 import { ORG_API_PATHS } from "../../../atoms/paths/ApiPaths";
+import { getRequest, patchRequest } from "../../../atoms/api/Apis";
 
 interface CardProps {
   title: string;
@@ -27,7 +28,7 @@ function UserCards(props: CardProps) {
 
   const getOrganisation= async ()=>{
     try {
-      const response=await axios.get(`${process.env.REACT_APP_URL}${ORG_API_PATHS.GET_ONE}${props.description}`)
+      const response=await getRequest(`${ORG_API_PATHS.GET_ONE}${props.description}`)
       setOrganisation(response.data.name);
       
     } catch (error) {
@@ -38,14 +39,9 @@ function UserCards(props: CardProps) {
 
   const registerUser = async () => {
     try {
-      const response = await axios.patch(
-        `${process.env.REACT_APP_URL}/users/patch/${props.title}/${userr.username}`,
-        register,
-        {
-          headers: {
-            Authorization: `Bearer ${userr.token}`,
-          },
-        }
+      const response = await patchRequest(
+        `/users/patch/${props.title}/${userr.username}`,
+        register
       );
     
       props.registered(true);

@@ -13,11 +13,13 @@ import classNames from "classnames";
 import { useLocation } from "react-router-dom";
 import { Box } from "@mui/material";
 import { EVENT_API_PATHS } from "../atoms/paths/ApiPaths";
+import { getRequest, patchRequest } from "../atoms/api/Apis";
 
 const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop(Calendar);
 
 const initialState: Event = {
+  id:"",
   start: moment().toDate(),
   end: moment().toDate(),
   title: "Some title",
@@ -50,17 +52,13 @@ function Calender() {
     let tempEvents: Event[] = [];
 
     try {
-      const response = await axios.get(
+      const response = await getRequest(
         userr.role !== "SuperUser"
-          ? `${process.env.REACT_APP_URL}${EVENT_API_PATHS.GET_EVENTS_FOR_ORG}${userr.orgId}`
-          : `${process.env.REACT_APP_URL}${EVENT_API_PATHS.GET_EVENTS}`,
-        {
-          headers: {
-            Authorization: `Bearer ${userr.token}`,
-          },
-        }
+          ? `${EVENT_API_PATHS.GET_EVENTS_FOR_ORG}${userr.orgId}`
+          : `${EVENT_API_PATHS.GET_EVENTS}`,
       );
       tempEvents = response?.data.map((event) => ({
+        id: event._id,
         title: event.title,
         start: event.start ? new Date(event.start) : null,
         end: event.end ? new Date(event.end) : null,
@@ -81,11 +79,10 @@ function Calender() {
     const { start, end } = data;
   };
 
-  const patchRequest = async (data: any, title: string) => {
-    console.log("title", title);
+  const patchReq = async (data: any, id: string) => {
     try {
-      const response = await axios.patch(
-        `${process.env.REACT_APP_URL}${EVENT_API_PATHS.EDIT_EVENT}${title}`,
+      const response = await patchRequest(
+        `${EVENT_API_PATHS.EDIT_EVENT}${id}`,
         data
       );
     } catch (error) {
@@ -101,7 +98,7 @@ function Calender() {
       end: new Date(newEnd),
     };
 
-    patchRequest(newEvent, event.title);
+    patchReq(newEvent, event.id);
     const { events } = eventState;
     let allDay = event.allDay;
 
@@ -128,7 +125,6 @@ function Calender() {
   };
 
   const EditEvent = (data) => {
-    const { title } = data;
     setPurpose(DialogAction.EDIT_EVENT);
     setShowModal(true);
     setSelectedEvent(data);
@@ -140,6 +136,7 @@ function Calender() {
   };
 
   const toggleSidebar = (data) => {
+    setSelectedEvent(data);
     setSidebarOpen(!sidebarOpen);
     if (!sidebarOpen) {
       seteventId(data.resource.id);
@@ -223,7 +220,7 @@ function Calender() {
         </div>
 
         <div
-          className={`flex bg-indigo-100 transition-all duration-800 ${
+          className={`flex bg-indigo-100 transition-all duration-1000 ${
             sidebarOpen ? "max-w-[100%]" : "max-w-[0]"
           }`}
         >
@@ -234,7 +231,11 @@ function Calender() {
                 classNames("slide-sidebar", sidebarAnimationClasses)
               }
             >
-              <RightSidebar isOpen={sidebarOpen} currentEvent={eventId} />
+              <RightSidebar
+                currentEvent={eventId}
+                setShowModal={setShowModal}
+                setPurpose={setPurpose}
+              />
             </div>
           )}
         </div>

@@ -7,7 +7,6 @@ import Login from "../pages/login/Login";
 import "react-toastify/dist/ReactToastify.css";
 import DefaultDashboard from "../components/organisms/DefaultDashboard";
 
-
 const Layout = () => {
   const userr = useUserSelector((state) => state);
 

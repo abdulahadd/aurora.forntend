@@ -11,7 +11,8 @@ import DropDown from "../../atoms/buttons/dropdowns/Dropdown";
 import { useUserSelector } from "../../../redux/redux-hooks/hooks";
 import Select from "react-select";
 import Multiselect from "multiselect-react-dropdown";
-import { EVENT_API_PATHS } from "../../atoms/paths/ApiPaths";
+import { EVENT_API_PATHS, ORG_API_PATHS } from "../../atoms/paths/ApiPaths";
+import { getRequest, getRequestParams, patchRequest, postRequest } from "../../atoms/api/Apis";
 
 type EventDate = Date | null;
 
@@ -51,38 +52,36 @@ export default function EventModal(props: EventProps) {
   const [selectOrga, setSelectOrga] = useState("Select");
   const [orgID, setorgID] = useState("");
 
-  const getUsers = (data: string) => {
-    fetch(`http://localhost:5000/users/list/?orgId=${data}`)
-      .then((response) => response.json())
-      .then((json) => {
-        const users: MultiUsers[] = json.map((user) => ({
-          cat: user._id,
-          key: user.username,
-        }));
-        setorgUsers(users);
-      })
-      .catch((error) => alert(error));
+  const getUsers = async (data: string) => {
+    try {
+      const response = await getRequest(`/users/list/?orgId=${data}`);
+      const users: MultiUsers[] = response.data.map((user) => ({
+        cat: user._id,
+        key: user.username,
+      }));
+      setorgUsers(users);
+    } catch (error) {}
   };
 
-  const getOrgs = () => {
-    fetch("http://localhost:5000/org")
-      .then((response) => response.json())
-      .then((json) => {
-        const organizations: DDListing[] = json.map((org) => ({
-          id: org._id,
-          name: org.name,
-        }));
-        setOrgs(organizations);
-      })
-      .catch((error) => console.log(error));
+  const getOrgs = async () => {
+    try {
+      const response = await getRequest(`${ORG_API_PATHS.GET_ORGS}`);
+      const organizations: DDListing[] = response.data.map((orgs) => ({
+        id: orgs._id,
+        name: orgs.name,
+      }));
+      setOrgs(organizations);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const preSelect = () => {
-    axios.get(`http://localhost:5000/users/ids`, {
-      params: {
-        ids: props.resource?.users.join(','), // Convert array to comma-separated string
-      },
-    })
+      getRequestParams(`users/ids`, {
+        params: {
+          ids: props.resource?.users.join(","), // Convert array to comma-separated string
+        },
+      })
       .then((response) => {
         const users: MultiUsers[] = response.data.map((user) => ({
           cat: user._id,
@@ -91,22 +90,18 @@ export default function EventModal(props: EventProps) {
         setSelectedUsers(users);
       })
       .catch((error) => console.log(error));
-
   };
-
 
   useEffect(() => {
     getOrgs();
     if (userr.role !== "SuperUser") {
       getUsers(userr.orgId);
     }
-
-    if(props.purpose===DialogAction.EDIT_EVENT && props.showModal===true)
-    {
+    if (props.purpose === DialogAction.EDIT_EVENT && props.showModal === true) {
       preSelect();
     }
   }, [props.showModal]);
-
+  
 
   const createEvent = async (data: Event) => {
     let obj: any;
@@ -118,7 +113,10 @@ export default function EventModal(props: EventProps) {
     }
 
     try {
-      const response = await axios.post(`${process.env.REACT_APP_COMMENTS_URL}${EVENT_API_PATHS.CREATE_EVENT}`, obj);
+      const response = await postRequest(
+        `${EVENT_API_PATHS.CREATE_EVENT}`,
+        obj
+      );
     } catch (error) {
       console.log(error);
     }
@@ -126,8 +124,8 @@ export default function EventModal(props: EventProps) {
 
   const editEvent = async (data: any, title: string) => {
     try {
-      const response = await axios.patch(
-        `${process.env.REACT_APP_COMMENTS_URL}${EVENT_API_PATHS.EDIT_EVENT}${title}`,
+      const response = await patchRequest(
+        `${EVENT_API_PATHS.EDIT_EVENT}${title}`,
         data
       );
     } catch (error) {

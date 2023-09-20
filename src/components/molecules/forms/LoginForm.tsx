@@ -7,6 +7,7 @@ import axios, { AxiosError } from "axios";
 import "react-toastify/dist/ReactToastify.css";
 import { Alert } from "@mui/material";
 import { AUTH_API_PATHS } from "../../atoms/paths/ApiPaths";
+import { getRequest, postRequest } from "../../atoms/api/Apis";
 
 const LoginForm = () => {
   const [user, setUser] = useState({
@@ -43,16 +44,17 @@ const LoginForm = () => {
     };
 
     try {
-      const response = await axios.post(
-        `${process.env.REACT_APP_URL}${AUTH_API_PATHS.POST_LOGIN}`,
+      const response = await postRequest(
+        `${AUTH_API_PATHS.POST_LOGIN}`,
         postData
       );
-      const token = response.data.access_token;
-      const org = response.data.payload.orgId;
+      console.log("Hello g")
+      const token = await response.data.access_token;
+      const org = await response.data.payload.orgId;
 
       try {
-        const role = await axios.get(
-          `${process.env.REACT_APP_URL}/roles/${response.data.payload.role}`
+        const role = await getRequest(
+          `/roles/${response.data.payload.role}`
         );
         if (token?.length) {
           dispatch(

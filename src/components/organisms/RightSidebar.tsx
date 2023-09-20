@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useUserSelector } from "../../redux/redux-hooks/hooks";
 import { Menu, Sidebar } from "react-pro-sidebar";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -11,10 +11,19 @@ import { CommentType } from "../atoms/types/comments/commentTypes";
 import { Edit } from "@mui/icons-material";
 import { Delete } from "@mui/icons-material";
 import moment from "moment";
+import { DialogAction } from "./Calender";
+import { COMMENT_API_PATHS, EVENT_API_PATHS } from "../atoms/paths/ApiPaths";
+import {
+  deleteRequest,
+  getRequest,
+  patchRequest,
+  postRequest,
+} from "../atoms/api/Apis";
 
 interface SideBarProps {
   currentEvent: string;
-  isOpen: boolean;
+  setShowModal: Dispatch<SetStateAction<boolean>>;
+  setPurpose: Dispatch<SetStateAction<DialogAction>>;
 }
 
 const initialState: CommentType = {
@@ -22,12 +31,15 @@ const initialState: CommentType = {
   userId: "",
   eventId: "",
   comment: "",
-  time:moment().toDate(),
-  isEdited:false
-
+  time: moment().toDate(),
+  isEdited: false,
 };
 
-const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
+const RightSidebar: React.FC<SideBarProps> = ({
+  currentEvent,
+  setShowModal,
+  setPurpose,
+}) => {
   const user = useUserSelector((state) => state);
   const [addComment, setAddComment] = useState("");
   const [eventDet, setEventDet] = useState<EventDetails>();
@@ -39,8 +51,7 @@ const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
   const [editComment, seteditComment] = useState<CommentType>();
 
   const getComments = () => {
-    axios
-      .get(`${process.env.REACT_APP_COMMENTS_URL}event/${currentEvent}`)
+    getRequest(`${COMMENT_API_PATHS.GET_COMMENTS_FOR_EVENT}${currentEvent}`)
       .then((response) => {
         const comment: CommentType[] = response.data;
         setComments(comment);
@@ -49,8 +60,7 @@ const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
   };
 
   const getEventDetails = () => {
-    axios
-      .get(`${process.env.REACT_APP_EVENTS_URL}${currentEvent}`)
+    getRequest(`${EVENT_API_PATHS.GET_ONE}${currentEvent}`)
       .then((response) => {
         const event: EventDetails = response.data;
         setStartDate(format(new Date(response.data.start), "kk:mm a "));
@@ -70,8 +80,7 @@ const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
       isEdited: false,
     };
 
-    axios
-      .post(`${process.env.REACT_APP_COMMENTS_URL}`, comment)
+    postRequest(`${COMMENT_API_PATHS.ADD_COMMENT}`, comment)
       .then((response) => {
         setAddComment("");
         setifAdded(!ifAdded);
@@ -90,8 +99,8 @@ const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
 
   const editHandler = async () => {
     try {
-      const response = await axios.patch(
-        `${process.env.REACT_APP_COMMENTS_URL}${editComment?._id}`,
+      const response = await patchRequest(
+        `${COMMENT_API_PATHS.EDIT_COMMENT}${editComment?._id}`,
         { comment: addComment, time: moment().toDate(), isEdited: true }
       );
       setAddComment("");
@@ -104,13 +113,18 @@ const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
 
   const deleteHandler = async (comment) => {
     try {
-      const response = await axios.delete(
-        `${process.env.REACT_APP_COMMENTS_URL}${comment?._id}`
+      const response = await deleteRequest(
+        `${COMMENT_API_PATHS.DELETE_COMMENT}${comment?._id}`
       );
       setifAdded(!ifAdded);
     } catch (error) {
       console.log(error);
     }
+  };
+
+  const handleClick = () => {
+    setPurpose(DialogAction.EDIT_EVENT);
+    setShowModal(true);
   };
 
   return (
@@ -122,6 +136,7 @@ const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
               <div className=" text-xl ml-5 text-gray-200">
                 {eventDet?.title}
               </div>
+              <Edit sx={{ color: "white" }} onClick={handleClick}></Edit>
             </div>
           </div>
 
@@ -149,7 +164,14 @@ const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
                                 <strong className=" mb-1 pr-2">
                                   {comment?.userId}
                                 </strong>
-                                <small className="pt-1">{format(new Date(comment? comment.time: moment().toDate()), "kk:mm a ")}</small>
+                                <small className="pt-1 text-gray-400">
+                                  {format(
+                                    new Date(
+                                      comment ? comment.time : moment().toDate()
+                                    ),
+                                    "kk:mm a "
+                                  )}
+                                </small>
                               </div>
                               {user.username === comment?.userId && (
                                 <div>
@@ -170,8 +192,14 @@ const RightSidebar: React.FC<SideBarProps> = ({ currentEvent, isOpen }) => {
                                 </div>
                               )}
                             </div>
-                            <p className="text-sm text-slate-800">{comment?.comment}</p>
-                            <div>{comment.isEdited? <small>Edited</small> : null}</div>
+                            <p className="text-sm text-slate-800">
+                              {comment?.comment}
+                            </p>
+                            <div>
+                              {comment.isEdited ? (
+                                <small className=" text-gray-400">Edited</small>
+                              ) : null}
+                            </div>
                           </div>
                         </div>
                       </div>

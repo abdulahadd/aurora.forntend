@@ -1,4 +1,4 @@
-import { Outlet } from "react-router-dom";
+import { Outlet, useNavigate } from "react-router-dom";
 import { useUserSelector } from "../../redux/redux-hooks/hooks";
 import SideBar from "../../components/organisms/SideBar";
 import NotificationPanel from "../../components/organisms/NotificationPanel";
@@ -14,6 +14,7 @@ function DashBoard() {
   const userr = useUserSelector((state) => state);
   const [sidebarOpen, setSidebarOpen] = useState(true);
   const { title } = useTitleState();
+  const navigate = useNavigate();
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -25,6 +26,8 @@ function DashBoard() {
         position: toast.POSITION.TOP_RIGHT,
       });
     }
+    navigate("/dashboard/defaultdashboard")
+
   }, []);
 
   return (

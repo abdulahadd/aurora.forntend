@@ -8,8 +8,10 @@ import axios from "axios";
 import { Event } from "../atoms/types/events/eventTypes";
 import moment from "moment";
 import { EVENT_API_PATHS } from "../atoms/paths/ApiPaths";
+import { getRequest } from "../atoms/api/Apis";
 
 const initialState: Event = {
+  id:"",
   start: moment().toDate(),
   end: moment().toDate(),
   title: "No Events",
@@ -21,6 +23,7 @@ tomorrow.setDate(tomorrow.getDate() + 1);
 
 
 const initialStateTomorrow: Event = {
+  id: "",
   start: tomorrow,
   end: moment().toDate(),
   title: "No Events",
@@ -52,17 +55,14 @@ function DefaultDashboard() {
     let tempEvents: Event[] = [];
 
     try {
-      const response = await axios.get(
+      const response = await getRequest(
         userr.role !== "SuperUser"
-          ? `${process.env.REACT_APP_URL}${EVENT_API_PATHS.GET_EVENTS_FOR_ORG}${userr.orgId}`
-          : `${process.env.REACT_APP_URL}${EVENT_API_PATHS.GET_EVENTS}`,
-        {
-          headers: {
-            Authorization: `Bearer ${userr.token}`,
-          },
-        }
+          ? `${EVENT_API_PATHS.GET_EVENTS_FOR_ORG}${userr.orgId}`
+          : `${EVENT_API_PATHS.GET_EVENTS}`,
+        
       );
       tempEvents = response?.data.map((event) => ({
+        id: event._id,
         title: event.title,
         start: event.start ? new Date(event.start) : null,
         end: event.end ? new Date(event.end) : null,

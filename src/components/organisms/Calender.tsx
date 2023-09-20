@@ -13,7 +13,7 @@ import classNames from "classnames";
 import { useLocation } from "react-router-dom";
 import { Box } from "@mui/material";
 import { EVENT_API_PATHS } from "../atoms/paths/ApiPaths";
-import { getRequest } from "../atoms/api/Apis";
+import { getRequest, patchRequest } from "../atoms/api/Apis";
 
 const localizer = momentLocalizer(moment);
 const DnDCalendar = withDragAndDrop(Calendar);
@@ -79,7 +79,7 @@ function Calender() {
     const { start, end } = data;
   };
 
-  const patchRequest = async (data: any, id: string) => {
+  const patchReq = async (data: any, id: string) => {
     try {
       const response = await patchRequest(
         `${EVENT_API_PATHS.EDIT_EVENT}${id}`,
@@ -98,7 +98,7 @@ function Calender() {
       end: new Date(newEnd),
     };
 
-    patchRequest(newEvent, event.id);
+    patchReq(newEvent, event.id);
     const { events } = eventState;
     let allDay = event.allDay;
 

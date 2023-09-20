@@ -8,7 +8,8 @@ import { OrganisationType } from "../../atoms/types/Organisation/OrgData";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
 import { DDListing } from "../modals/eventModal";
-import { postRequest } from "../../atoms/api/Apis";
+import { getRequest, postRequest } from "../../atoms/api/Apis";
+import { ORG_API_PATHS } from "../../atoms/paths/ApiPaths";
 
 type SignUpProp = {
   setError: (value: boolean) => void;
@@ -40,30 +41,31 @@ const SignUpForm = (porps: SignUpProp) => {
 
   const effectCalled = useRef(false);
 
-  const getOrgs = () => {
-    fetch("http://localhost:5000/org")
-      .then((response) => response.json())
-      .then((json) => {
-        const organizations: DDListing[] = json.map((org) => ({
-          id: org._id,
-          name: org.name,
-        }));
-        setOrgs(organizations);
-      })
-      .catch((error) => console.log(error));
+  const getOrgs = async () => {
+    try {
+      const response = await getRequest(`${ORG_API_PATHS.GET_ORGS}`);
+      const organizations: DDListing[] = response.data.map((orgs) => ({
+        id: orgs._id,
+        name: orgs.name,
+      }));
+      setOrgs(organizations);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const getRoles = () => {
-    fetch(`${process.env.REACT_APP_URL}/roles`)
-      .then((response) => response.json())
-      .then((json) => {
-        const roles: DDListing[] = json.map((role) => ({
-          name: role.name !== "SuperUser" && role.name,
-          id: role._id,
-        }));
-        setRoles(roles);
-      })
-      .catch((error) => console.log(error));
+
+  const getRoles = async () => {
+    try {
+      const response = await getRequest(`/roles`);
+      const roles: DDListing[] = response.data.map((role) => ({
+        name: role.name !== "SuperUser" && role.name,
+        id: role._id,
+      }));
+      setRoles(roles);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   //---------------useEffect-------------------------------//

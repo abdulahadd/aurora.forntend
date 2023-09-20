@@ -12,7 +12,7 @@ import { useUserSelector } from "../../../redux/redux-hooks/hooks";
 import Select from "react-select";
 import Multiselect from "multiselect-react-dropdown";
 import { EVENT_API_PATHS, ORG_API_PATHS } from "../../atoms/paths/ApiPaths";
-import { getRequest, patchRequest, postRequest } from "../../atoms/api/Apis";
+import { getRequest, getRequestParams, patchRequest, postRequest } from "../../atoms/api/Apis";
 
 type EventDate = Date | null;
 
@@ -77,8 +77,7 @@ export default function EventModal(props: EventProps) {
   };
 
   const preSelect = () => {
-    axios
-      .get(`${process.env.REACT_APP_URL}users/ids`, {
+      getRequestParams(`users/ids`, {
         params: {
           ids: props.resource?.users.join(","), // Convert array to comma-separated string
         },

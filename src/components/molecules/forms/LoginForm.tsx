@@ -3,8 +3,11 @@ import { useUserDispatch } from "../../../redux/redux-hooks/hooks";
 import { updateUserState } from "../../../redux/slices/users/user-slice";
 import { Link } from "react-router-dom";
 import bgimg from "../../../assets/pngs/182-_converted_.png";
-import axios from "axios";
+import axios, { AxiosError } from "axios";
 import "react-toastify/dist/ReactToastify.css";
+import { Alert } from "@mui/material";
+import { AUTH_API_PATHS } from "../../atoms/paths/ApiPaths";
+import { getRequest, postRequest } from "../../atoms/api/Apis";
 
 const LoginForm = () => {
   const [user, setUser] = useState({
@@ -41,16 +44,17 @@ const LoginForm = () => {
     };
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/auth/login",
+      const response = await postRequest(
+        `${AUTH_API_PATHS.POST_LOGIN}`,
         postData
       );
-      const token = response.data.access_token;
-      const org = response.data.payload.orgId;
+      console.log("Hello g")
+      const token = await response.data.access_token;
+      const org = await response.data.payload.orgId;
 
       try {
-        const role = await axios.get(
-          `http://localhost:5000/roles/${response.data.payload.role}`
+        const role = await getRequest(
+          `/roles/${response.data.payload.role}`
         );
         if (token?.length) {
           dispatch(
@@ -66,8 +70,8 @@ const LoginForm = () => {
       } catch (error) {
         console.log(error);
       }
-    } catch (error) {
-      alert(error);
+    } catch (error:any) {
+      alert(error.response.data.message);
     }
 
     setUser({

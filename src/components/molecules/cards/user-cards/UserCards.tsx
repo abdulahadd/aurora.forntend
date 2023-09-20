@@ -3,6 +3,8 @@ import axios from "axios";
 import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useUserSelector } from "../../../../redux/redux-hooks/hooks";
 import RegModal from "../../modals/regModal";
+import { ORG_API_PATHS } from "../../../atoms/paths/ApiPaths";
+import { getRequest, patchRequest } from "../../../atoms/api/Apis";
 
 interface CardProps {
   title: string;
@@ -22,17 +24,24 @@ function UserCards(props: CardProps) {
   const [open, setOpen] = useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
+  const [organisation, setOrganisation]=useState("");
+
+  const getOrganisation= async ()=>{
+    try {
+      const response=await getRequest(`${ORG_API_PATHS.GET_ONE}${props.description}`)
+      setOrganisation(response.data.name);
+      
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
 
   const registerUser = async () => {
     try {
-      const response = await axios.patch(
-        `http://localhost:5000/users/patch/${props.title}/${userr.username}`,
-        register,
-        {
-          headers: {
-            Authorization: `Bearer ${userr.token}`,
-          },
-        }
+      const response = await patchRequest(
+        `/users/patch/${props.title}/${userr.username}`,
+        register
       );
     
       props.registered(true);
@@ -46,6 +55,7 @@ function UserCards(props: CardProps) {
     if (confirmation) {
       registerUser();
     }
+    getOrganisation();
   }, [confirmation]);
 
   const onClickHandler = () => {
@@ -64,7 +74,7 @@ function UserCards(props: CardProps) {
           <div className="font-bold text-xl mb-2 text-left">{props.title}</div>
           <div className="flex justify-between">
             <p className="text-gray-700 text-base font-bold">
-              {props.description}
+              {organisation}
             </p>
             <Button variant="outlined" size="small" onClick={onClickHandler}>
               Register

@@ -7,9 +7,18 @@ export type Resource={
   
 export type Event={
 
+    id: string,
     start: EventDate,
     end: EventDate,
     title: string,
     resource: Resource
+}
+
+export type EventDetails={
+  start: EventDate,
+    end: EventDate,
+    title: string,
+    orgId: string,
+    users: string[]
 }
 

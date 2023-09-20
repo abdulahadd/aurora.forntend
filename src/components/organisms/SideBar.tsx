@@ -1,14 +1,7 @@
-import React, { useState } from "react";
-import {
-  useUserSelector,
-} from "../../redux/redux-hooks/hooks";
-import { Sidebar, Menu} from "react-pro-sidebar";
-import {
-  Box,
-  IconButton,
-  Typography,
-  colors,
-} from "@mui/material";
+import React, { useEffect, useState } from "react";
+import { useUserSelector } from "../../redux/redux-hooks/hooks";
+import { Sidebar, Menu } from "react-pro-sidebar";
+import { Box, IconButton, Typography, colors } from "@mui/material";
 import HomeIcon from "@mui/icons-material/Home";
 import PersonAddAltIcon from "@mui/icons-material/PersonAddAlt";
 import LogoutIcon from "@mui/icons-material/Logout";
@@ -16,7 +9,9 @@ import MenuIcon from "@mui/icons-material/Menu";
 import profileimg from "../../assets/jpgs/man-using-laptop-.jpg";
 import Item from "../atoms/items/Items";
 import { CalendarMonthOutlined } from "@mui/icons-material";
-
+import axios from "axios";
+import { getRequest } from "../atoms/api/Apis";
+import { ORG_API_PATHS } from "../atoms/paths/ApiPaths";
 
 interface SideBarProps {
   role: string;
@@ -27,7 +22,24 @@ interface SideBarProps {
 const SideBar: React.FC<SideBarProps> = ({ role, isOpen, toggleSidebar }) => {
   const user = useUserSelector((state) => state);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [selected, setSelected] = useState("Dashboard");
+  const [selected, setSelected] = useState("/dashboard/defaultdashboard");
+  const [organisation, setOrganisation] = useState("");
+
+  const getOrganisation = async () => {
+    try {
+      const response = await getRequest(
+        `${ORG_API_PATHS.GET_ONE}${user.orgId}`
+      );
+
+      setOrganisation(response.data.name);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  useEffect(() => {
+    getOrganisation();
+  }, []);
 
   return (
     <div className="flex h-full">
@@ -40,7 +52,9 @@ const SideBar: React.FC<SideBarProps> = ({ role, isOpen, toggleSidebar }) => {
             {isCollapsed ? <MenuIcon sx={{ color: "white" }} /> : undefined}
             {!isCollapsed && (
               <div className=" flex justify-between items-center">
-                <div className=" text-xl ml-5 text-gray-200">{selected}</div>
+                <div className=" text-xl ml-5 text-gray-200">
+                  {organisation}
+                </div>
                 <IconButton onClick={() => setIsCollapsed(!isCollapsed)}>
                   <MenuIcon sx={{ color: "white" }} />
                 </IconButton>
@@ -78,32 +92,34 @@ const SideBar: React.FC<SideBarProps> = ({ role, isOpen, toggleSidebar }) => {
           <Box paddingLeft={isCollapsed ? undefined : "0%"}>
             <Item
               title1="Dashboard"
-              to="/dashboard"
+              to="/dashboard/defaultdashboard"
               icon={<HomeIcon />}
               selected={selected}
               setSelected={setSelected}
             />
 
-            {user.role==="SuperUser" &&(<Item
-              title1="Manage Team"
-              to="/dashboard/unregistered"
-              icon={<PersonAddAltIcon />}
-              selected={selected}
-              setSelected={setSelected}
-            />)}
-            
+            {user.role === "SuperUser" && (
+              <Item
+                title1="Manage Team"
+                to="/dashboard/unregistered"
+                icon={<PersonAddAltIcon />}
+                selected={selected}
+                setSelected={setSelected}
+              />
+            )}
+
             <Item
-              title1="Sign out"
-              to="/"
-              icon={<LogoutIcon />}
+              title1="Calendar"
+              to="/dashboard/calender"
+              icon={<CalendarMonthOutlined />}
               selected={selected}
               setSelected={setSelected}
             />
 
             <Item
-              title1="Calender"
-              to="/dashboard/calender"
-              icon={<CalendarMonthOutlined />}
+              title1="Sign out"
+              to="/"
+              icon={<LogoutIcon />}
               selected={selected}
               setSelected={setSelected}
             />

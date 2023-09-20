@@ -16,6 +16,7 @@ import SignUp from './pages/signup/SignUp';
 import DashBoard from './pages/dashboard/DashBoard';
 import TitleState from './context/title/TitleState';
 import Calender from './components/organisms/Calender';
+import DefaultDashboard from './components/organisms/DefaultDashboard';
 // test
 
 function App() {
@@ -30,6 +31,7 @@ function App() {
         <Route path='dashboard' element={<DashBoard/>}>
           <Route path='unregistered' element={<UnregisteredUsers />} />
           <Route path='calender' element={<Calender/>} />
+          <Route path='defaultdashboard' element={<DefaultDashboard/>}/>
         </Route>
       </Routes>
       

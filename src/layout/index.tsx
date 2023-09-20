@@ -5,7 +5,7 @@ import GuestLayout from "./guest/GuestLayout";
 import DashBoard from "../pages/dashboard/DashBoard";
 import Login from "../pages/login/Login";
 import "react-toastify/dist/ReactToastify.css";
-
+import DefaultDashboard from "../components/organisms/DefaultDashboard";
 
 const Layout = () => {
   const userr = useUserSelector((state) => state);

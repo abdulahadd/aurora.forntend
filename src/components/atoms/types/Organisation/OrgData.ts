@@ -1,6 +1,6 @@
 
 export type OrganisationType={
-    id: string;
+    _id: string;
     admin: string;
     name: string;
     noOfEmployees: number;

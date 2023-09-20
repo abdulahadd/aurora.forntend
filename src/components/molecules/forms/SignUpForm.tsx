@@ -7,6 +7,9 @@ import { RoleType } from "../../atoms/types/roles/RoleType";
 import { OrganisationType } from "../../atoms/types/Organisation/OrgData";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import { DDListing } from "../modals/eventModal";
+import { getRequest, postRequest } from "../../atoms/api/Apis";
+import { ORG_API_PATHS } from "../../atoms/paths/ApiPaths";
 
 type SignUpProp = {
   setError: (value: boolean) => void;
@@ -33,40 +36,42 @@ const SignUpForm = (porps: SignUpProp) => {
   });
 
   const [isSubmitted, setIsSubmitted] = useState(false);
-  const [roles, setRoles] = useState({
-    list: [],
-  });
-  const [orgs, setOrgs] = useState({
-    list: [],
-  });
+  const [roles, setRoles] = useState<DDListing[]>();
+  const [orgs, setOrgs] = useState<DDListing[]>();
 
   const effectCalled = useRef(false);
 
+  const getOrgs = async () => {
+    try {
+      const response = await getRequest(`${ORG_API_PATHS.GET_ORGS}`);
+      const organizations: DDListing[] = response.data.map((orgs) => ({
+        id: orgs._id,
+        name: orgs.name,
+      }));
+      setOrgs(organizations);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+
+  const getRoles = async () => {
+    try {
+      const response = await getRequest(`/roles`);
+      const roles: DDListing[] = response.data.map((role) => ({
+        name: role.name !== "SuperUser" && role.name,
+        id: role._id,
+      }));
+      setRoles(roles);
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
   //---------------useEffect-------------------------------//
 
-  useEffect(() => {
-    if (effectCalled.current) return;
 
-    fetch("http://localhost:5000/roles")
-      .then((response) => response.json())
-      .then((json) => {
-        const roleNames = json.map(
-          (role: RoleType) => role.name !== "SuperUser" && role.name
-        );
-        setRoles({ list: roleNames });
-      })
-      .catch((error) => alert(error));
-
-    fetch("http://localhost:5000/org")
-      .then((response) => response.json())
-      .then((json) => {
-        const organizationNames = json.map((org: OrganisationType) => org.name);
-        setOrgs({ list: organizationNames });
-      })
-      .catch((error) => alert(error));
-  }, []);
-
-  const postRequest = async (obj: UserData) => {
+  const postReq = async (obj: UserData) => {
     const postData: PostData = {
       username: obj.username,
       email: obj.email,
@@ -78,8 +83,8 @@ const SignUpForm = (porps: SignUpProp) => {
     };
 
     try {
-      const response = await axios.post(
-        "http://localhost:5000/users",
+      const response = await postRequest(
+        `/users`,
         postData
       );
 
@@ -95,9 +100,17 @@ const SignUpForm = (porps: SignUpProp) => {
     });
   };
 
+  useEffect(() => {
+    if (effectCalled.current) return;
+    getOrgs();
+    getRoles();
+
+    effectCalled.current=true;
+  }, []);
+
   const onSubmit: SubmitHandler<UserData> = (data) => {
     const obj = { ...userData, ...data };
-    postRequest(obj);
+    postReq(obj);
     if (!!errors) {
       porps.setError(false);
     }
@@ -108,7 +121,7 @@ const SignUpForm = (porps: SignUpProp) => {
     reset();
   };
 
-  const SelectHandler = (inputString: string, key: any) => {
+  const selectHandler = (inputString: string, key: any) => {
     const updatedUserData: any = { ...userData };
     updatedUserData[key] = inputString;
     setUserData(updatedUserData);
@@ -178,8 +191,8 @@ const SignUpForm = (porps: SignUpProp) => {
               <label className="text-left ">Organisation</label>
               <div className="mb-1 w-full text-bottom flex flex-col items-center">
                 <DropDown
-                  items={orgs.list}
-                  SelectHandler={SelectHandler}
+                  items={orgs}
+                  selectHandler={selectHandler}
                   fieldType="orga"
                   select={selectOrga}
                   setSelect={setSelectOrga}
@@ -191,8 +204,8 @@ const SignUpForm = (porps: SignUpProp) => {
               <label className="text-left mt-6">Register as</label>
               <div className=" mb-4 w-full text-bottom flex flex-col items-center">
                 <DropDown
-                  items={roles.list}
-                  SelectHandler={SelectHandler}
+                  items={roles}
+                  selectHandler={selectHandler}
                   fieldType="role"
                   select={selectRole}
                   setSelect={setSelectRole}

@@ -1,17 +1,18 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
+import userState from "../../../components/atoms/types/redux/redux-types";
 
-interface userState{
-    username: string;
-    password: string;
-    token: string;
-}
 
 const initialState:userState={
     username:'Abdul',
     password:'1234',
-    token:''
+    token:'',
+    role: '',
+    orgId: '',
+    isLoggedIn:false
 
 }
+
+
 
 const userSlice = createSlice({
     name:'user',
@@ -22,6 +23,9 @@ const userSlice = createSlice({
             state.username=action.payload.username;
             state.password=action.payload.password;
             state.token=action.payload.token;
+            state.role=action.payload.role;
+            state.orgId=action.payload.orgId;
+            state.isLoggedIn=action.payload.isLoggedIn;
 
         }
 

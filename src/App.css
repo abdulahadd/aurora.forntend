@@ -36,3 +36,12 @@
     transform: rotate(360deg);
   }
 }
+
+.ps-active {
+  color: purple;
+  font-weight: bold;
+}
+
+.slide-sidebar {
+  transform: translateX(0);
+}

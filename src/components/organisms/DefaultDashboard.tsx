@@ -115,7 +115,7 @@ function DefaultDashboard() {
             className="bg-purple-900 text-white active:bg-purple-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 ml-2 mb-4"
             type="button"
             onClick={() =>
-              navigate("../calender", { state: true, replace: true })
+              navigate("../calender", { state: {key: "add", modal: true}, replace: true})
             }
           >
             <Add />
@@ -136,6 +136,9 @@ function DefaultDashboard() {
             <div
               key={index}
               className="bg-white shadow-lg rounded-lg overflow-hidden"
+              onClick={() =>
+                navigate("../calender", { state: {id: event.id, sidebar: true, key: "EventDet"}, replace: true })
+              }
             >
               <div className="p-4">
                 <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
@@ -160,6 +163,9 @@ function DefaultDashboard() {
             <div
               key={index}
               className="bg-white shadow-lg rounded-lg overflow-hidden"
+              onClick={() =>
+                navigate("../calender", { state: {id: event.id, sidebar: true, key: "EventDet"}, replace: true })
+              }
             >
               <div className="p-4">
                 <h3 className="text-xl font-semibold mb-2">{event.title}</h3>

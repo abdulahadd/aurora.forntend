@@ -170,10 +170,6 @@ function Calender() {
     if (!sidebarOpen) {
       seteventId(data.resource.id);
     }
-    return (
-      <Link to="/calender?event=12345"></Link>
-
-    );
   };
 
   const sidebarAnimationClasses = sidebarOpen

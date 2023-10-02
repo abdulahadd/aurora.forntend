@@ -10,7 +10,7 @@ import EventModal from "../molecules/modals/eventModal";
 import { Add } from "@mui/icons-material";
 import RightSidebar from "./RightSidebar";
 import classNames from "classnames";
-import { useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { Box } from "@mui/material";
 import { EVENT_API_PATHS } from "../atoms/paths/ApiPaths";
 import { getRequest, patchRequest } from "../atoms/api/Apis";
@@ -33,10 +33,28 @@ export enum DialogAction {
 
 function Calender() {
   const location = useLocation();
+  let { eventTitle } = useParams();
+  let sidebar=false;
   let data = false;
-  if (location) {
+  if(location.state){
+  if( location.state.key==="EventDet")
+  {
+    sidebar=true;
+    eventTitle=location.state.id;
+  }
+  if (location.state.key==="add") {
     data = location.state;
   }
+
+  
+}
+
+  if(eventTitle)
+  {
+    sidebar=true;
+  }
+  
+  
   const userr = useUserSelector((state) => state);
   const [eventState, setEventState] = useState({
     events: [initialState],
@@ -45,8 +63,13 @@ function Calender() {
   const [purpose, setPurpose] = useState(DialogAction.CREATE_EVENT);
   const [selectedEvent, setSelectedEvent] = useState<Event>();
   const [eventsUpdated, setEventsUpdated] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(false);
-  const [eventId, seteventId] = useState("");
+  const [sidebarOpen, setSidebarOpen] = useState(sidebar);
+  const [eventId, seteventId] = useState(eventTitle);
+  const navigate = useNavigate();
+
+  if (location.state && sidebarOpen) {
+    navigate(`/dashboard/calender/${eventTitle}`);
+  }
 
   const getOrgEvents = async () => {
     let tempEvents: Event[] = [];
@@ -137,6 +160,12 @@ function Calender() {
 
   const toggleSidebar = (data) => {
     setSelectedEvent(data);
+    if (!sidebarOpen) {
+      navigate(`/dashboard/calender/${data.id}`);
+    }
+    else{
+      navigate(`/dashboard/calender`);
+    }
     setSidebarOpen(!sidebarOpen);
     if (!sidebarOpen) {
       seteventId(data.resource.id);

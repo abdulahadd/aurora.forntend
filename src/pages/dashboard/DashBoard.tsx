@@ -26,7 +26,7 @@ function DashBoard() {
         position: toast.POSITION.TOP_RIGHT,
       });
     }
-    navigate("/dashboard/defaultdashboard")
+    //navigate("/dashboard/defaultdashboard")
 
   }, []);
 

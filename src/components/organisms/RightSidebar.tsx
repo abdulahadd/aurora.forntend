@@ -21,7 +21,7 @@ import {
 } from "../atoms/api/Apis";
 
 interface SideBarProps {
-  currentEvent: string;
+  currentEvent: string | undefined;
   setShowModal: Dispatch<SetStateAction<boolean>>;
   setPurpose: Dispatch<SetStateAction<DialogAction>>;
 }

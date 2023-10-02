@@ -1,4 +1,10 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
 import { Event, Resource } from "../../atoms/types/events/eventTypes";
 import axios from "axios";
@@ -12,12 +18,19 @@ import { useUserSelector } from "../../../redux/redux-hooks/hooks";
 import Select from "react-select";
 import Multiselect from "multiselect-react-dropdown";
 import { EVENT_API_PATHS, ORG_API_PATHS } from "../../atoms/paths/ApiPaths";
-import { getRequest, getRequestParams, patchRequest, postRequest } from "../../atoms/api/Apis";
+import {
+  getRequest,
+  getRequestParams,
+  patchRequest,
+  postRequest,
+} from "../../atoms/api/Apis";
+import { websocketContext } from "../../../context/socket/WebSocketContext";
 
 type EventDate = Date | null;
 
 export interface EventProps {
   title: string;
+  orgID: string;
   purpose: DialogAction;
   showModal: boolean;
   setShowModal: Dispatch<SetStateAction<boolean>>;
@@ -51,6 +64,7 @@ export default function EventModal(props: EventProps) {
   const [orgs, setOrgs] = useState<DDListing[]>();
   const [selectOrga, setSelectOrga] = useState("Select");
   const [orgID, setorgID] = useState("");
+  const socket = useContext(websocketContext);
 
   const getUsers = async (data: string) => {
     try {
@@ -77,11 +91,11 @@ export default function EventModal(props: EventProps) {
   };
 
   const preSelect = () => {
-      getRequestParams(`users/ids`, {
-        params: {
-          ids: props.resource?.users.join(","), // Convert array to comma-separated string
-        },
-      })
+    getRequestParams(`users/ids`, {
+      params: {
+        ids: props.resource?.users.join(","), // Convert array to comma-separated string
+      },
+    })
       .then((response) => {
         const users: MultiUsers[] = response.data.map((user) => ({
           cat: user._id,
@@ -96,12 +110,24 @@ export default function EventModal(props: EventProps) {
     getOrgs();
     if (userr.role !== "SuperUser") {
       getUsers(userr.orgId);
+    } else {
+      getUsers(props.orgID);
     }
     if (props.purpose === DialogAction.EDIT_EVENT && props.showModal === true) {
       preSelect();
     }
   }, [props.showModal]);
-  
+
+  const createNotification= async (notification: any) =>{
+    try {
+      const response = await postRequest(
+        `/notifications`,
+        notification
+      );
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   const createEvent = async (data: Event) => {
     let obj: any;
@@ -120,6 +146,17 @@ export default function EventModal(props: EventProps) {
     } catch (error) {
       console.log(error);
     }
+    const notification = {
+      message: " You have been added to an event ",
+      createdAt: new Date,
+      isNew: true,
+      users: users,
+      viewedBy: []
+    };
+
+    createNotification(notification);
+
+    socket.emit("newNotification", notification);
   };
 
   const editEvent = async (data: any, title: string) => {
@@ -145,12 +182,14 @@ export default function EventModal(props: EventProps) {
       setendDateTime(null);
       setSelectOrga("Select");
       props.setEventsUpdated(true);
+      setSelectedUsers([]);
     } else {
       editEvent(obj, props?.title);
       setStartDateTime(null);
       setendDateTime(null);
       setSelectOrga("Select");
       props.setEventsUpdated(true);
+      setSelectedUsers([]);
     }
     reset();
     props.setShowModal(false);

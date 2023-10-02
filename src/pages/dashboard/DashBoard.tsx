@@ -51,7 +51,6 @@ function DashBoard() {
         <NotificationPanel
           userLogoUrl="https://via.placeholder.com/100"
           userName={userr.username}
-          notifications={notifications}
         />
 
         

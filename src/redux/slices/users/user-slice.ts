@@ -1,8 +1,10 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import userState from "../../../components/atoms/types/redux/redux-types";
+import { stat } from "fs";
 
 
 const initialState:userState={
+    _id:'',
     username:'Abdul',
     password:'1234',
     token:'',
@@ -20,6 +22,7 @@ const userSlice = createSlice({
     reducers:{
 
         updateUserState(state, action: PayloadAction<userState>){
+            state._id=action.payload._id;
             state.username=action.payload.username;
             state.password=action.payload.password;
             state.token=action.payload.token;

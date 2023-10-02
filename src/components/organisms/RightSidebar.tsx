@@ -21,6 +21,7 @@ import {
 } from "../atoms/api/Apis";
 
 interface SideBarProps {
+  setOrgID: Dispatch<SetStateAction<string>>;
   currentEvent: string | undefined;
   setShowModal: Dispatch<SetStateAction<boolean>>;
   setPurpose: Dispatch<SetStateAction<DialogAction>>;
@@ -36,6 +37,7 @@ const initialState: CommentType = {
 };
 
 const RightSidebar: React.FC<SideBarProps> = ({
+  setOrgID,
   currentEvent,
   setShowModal,
   setPurpose,
@@ -65,6 +67,7 @@ const RightSidebar: React.FC<SideBarProps> = ({
         const event: EventDetails = response.data;
         setStartDate(format(new Date(response.data.start), "kk:mm a "));
         setEndDate(format(new Date(response.data.end), "kk:mm a "));
+        setOrgID(event.orgId)
         setEventDet(event);
       })
       .catch((error) => console.log(error));

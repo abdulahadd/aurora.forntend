@@ -65,6 +65,7 @@ function Calender() {
   const [eventsUpdated, setEventsUpdated] = useState(false);
   const [sidebarOpen, setSidebarOpen] = useState(sidebar);
   const [eventId, seteventId] = useState(eventTitle);
+  const [orgID, setOrgID]=useState("none")
   const navigate = useNavigate();
 
   if (location.state && sidebarOpen) {
@@ -203,6 +204,7 @@ function Calender() {
       {purpose === DialogAction.CREATE_EVENT ? (
         <EventModal
           title="None"
+          orgID="None"
           purpose={purpose}
           showModal={showModal}
           setShowModal={setShowModal}
@@ -212,6 +214,7 @@ function Calender() {
       ) : (
         <EventModal
           title={selectedEvent ? selectedEvent.title : ""}
+          orgID={orgID}
           purpose={purpose}
           showModal={showModal}
           setShowModal={setShowModal}
@@ -237,11 +240,11 @@ function Calender() {
                 ? onEventResize
                 : undefined
             }
-            onDoubleClickEvent={
-              userr.role === "Admin" || userr.role === "SuperUser"
-                ? EditEvent
-                : undefined
-            }
+            // onDoubleClickEvent={
+            //   userr.role === "Admin" || userr.role === "SuperUser"
+            //     ? EditEvent
+            //     : undefined
+            // }
             onSelectEvent={toggleSidebar}
             resizable
             style={{ height: 700 }}
@@ -261,6 +264,7 @@ function Calender() {
               }
             >
               <RightSidebar
+                setOrgID={setOrgID}
                 currentEvent={eventId}
                 setShowModal={setShowModal}
                 setPurpose={setPurpose}

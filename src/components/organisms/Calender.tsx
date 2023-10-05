@@ -203,22 +203,25 @@ function Calender() {
 
       {purpose === DialogAction.CREATE_EVENT ? (
         <EventModal
-          title="None"
+          id="None"
           orgID="None"
           purpose={purpose}
           showModal={showModal}
           setShowModal={setShowModal}
+          setSidebarOpen={setSidebarOpen}
           setEventsUpdated={setEventsUpdated}
+          
           resource={null}
         ></EventModal>
       ) : (
         <EventModal
-          title={selectedEvent ? selectedEvent.title : ""}
+          id={selectedEvent ? selectedEvent.id : ""}
           orgID={orgID}
           purpose={purpose}
           showModal={showModal}
           setShowModal={setShowModal}
           setEventsUpdated={setEventsUpdated}
+          setSidebarOpen={setSidebarOpen}
           resource={selectedEvent ? selectedEvent.resource : null}
         ></EventModal>
       )}
@@ -264,6 +267,8 @@ function Calender() {
               }
             >
               <RightSidebar
+                setEventsUpdated={setEventsUpdated}
+                setSidebarOpen={setSidebarOpen}
                 setOrgID={setOrgID}
                 currentEvent={eventId}
                 setShowModal={setShowModal}

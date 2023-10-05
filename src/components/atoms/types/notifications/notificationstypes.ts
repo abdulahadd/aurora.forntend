@@ -1,6 +1,6 @@
 
 export type NotificationType={
-    _id: string;
+    id: string;
     message: string;
     createdAt: Date;
     users: [];

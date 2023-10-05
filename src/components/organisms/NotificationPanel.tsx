@@ -9,7 +9,7 @@ import PersonOutlinedIcon from "@mui/icons-material/PersonOutlined";
 import SearchIcon from "@mui/icons-material/Search";
 import { websocketContext } from "../../context/socket/WebSocketContext";
 import { NotificationType } from "../atoms/types/notifications/notificationstypes";
-import { getRequest } from "../atoms/api/Apis";
+import { getRequest, putRequest } from "../atoms/api/Apis";
 import { useUserSelector } from "../../redux/redux-hooks/hooks";
 
 interface NotificationPanelProps {
@@ -18,7 +18,7 @@ interface NotificationPanelProps {
 }
 
 const initialNotification: NotificationType = {
-  _id: "",
+  id: "",
   message: "",
   createdAt: new Date(),
   users: [],
@@ -64,7 +64,10 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({
         users: notification.users,
         viewedBy: notification.viewedBy,
       }));
-      setNotifications((prev) => [...prev, ...tempNots]);
+      const sortedAsc = tempNots.sort(
+        (objA, objB) => Number(objB.createdAt) - Number(objA.createdAt),
+      );
+      setNotifications((prev) => [...prev, ...sortedAsc]);
       setPage((prevPage) => prevPage + 1);
       setLoading(false);
       if (tempNots.length === 0) {
@@ -75,6 +78,17 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({
       setLoading(false);
     }
   };
+
+  const viewNotification = async (id: string) => {
+    console.log(id);
+    try {
+      const response= await putRequest(`/notifications/read/${id}`, user._id)
+      
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
 
   const handleScroll = () => {
     if (!containerRef.current) return;
@@ -127,6 +141,7 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({
     getNotifications();
   };
 
+ 
   return (
     <div className=" flex bg-white justify-between p-2 ">
       <div className="flex border-gray-300 border-2 border-spacing-3">
@@ -179,9 +194,9 @@ const NotificationPanel: React.FC<NotificationPanelProps> = ({
             {notifications?.map(
               (notification) =>
                 notification && (
-                  <div className="py-2" key={notification._id}>
-                    <a className="flex items-center px-4 py-3 border-b hover:bg-gray-100 -mx-2">
-                      <p className="text-gray-600 text-sm mx-2">
+                  <div className="py-2" key={notification.id} >
+                    <a className="flex items-center px-4 py-3 border-b hover:bg-gray-100 -mx-2" >
+                      <p className="text-gray-600 text-sm mx-2" >
                         <span className="font-bold">
                           {notification.message}
                         </span>{" "}

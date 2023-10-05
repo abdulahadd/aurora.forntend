@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { useUserSelector } from "../../redux/redux-hooks/hooks";
 import { Sidebar, Menu } from "react-pro-sidebar";
 import { Box, IconButton, Typography, colors } from "@mui/material";
@@ -17,12 +17,13 @@ interface SideBarProps {
   role: string;
   isOpen: boolean;
   toggleSidebar: () => void;
+  selected: string;
+  setSelected: Dispatch<SetStateAction<string>>;
 }
 
-const SideBar: React.FC<SideBarProps> = ({ role, isOpen, toggleSidebar }) => {
+const SideBar: React.FC<SideBarProps> = ({ role, isOpen, toggleSidebar, selected, setSelected }) => {
   const user = useUserSelector((state) => state);
   const [isCollapsed, setIsCollapsed] = useState(false);
-  const [selected, setSelected] = useState("/dashboard/defaultdashboard");
   const [organisation, setOrganisation] = useState("");
 
   const getOrganisation = async () => {

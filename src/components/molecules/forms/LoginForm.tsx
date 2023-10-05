@@ -48,16 +48,12 @@ const LoginForm = () => {
         `${AUTH_API_PATHS.POST_LOGIN}`,
         postData
       );
-      console.log("Hello g")
       const token = await response.data.access_token;
       const org = await response.data.payload.orgId;
-      const userid= await response.data.payload.sub;
-      console.log("ID : ", userid);
+      const userid = await response.data.payload.sub;
 
       try {
-        const role = await getRequest(
-          `/roles/${response.data.payload.role}`
-        );
+        const role = await getRequest(`/roles/${response.data.payload.role}`);
         if (token?.length) {
           dispatch(
             updateUserState({
@@ -73,7 +69,7 @@ const LoginForm = () => {
       } catch (error) {
         console.log(error);
       }
-    } catch (error:any) {
+    } catch (error: any) {
       alert(error.response.data.message);
     }
 

@@ -20,7 +20,8 @@ export const EVENT_API_PATHS = {
     GET_ONE:"/events/",
     GET_EVENTS_FOR_ORG:"/events/org/",
     CREATE_EVENT: "/events",
-    EDIT_EVENT:"/events/"
+    EDIT_EVENT:"/events/",
+    DELETE_EVENT:"/events/"
 
   };
 

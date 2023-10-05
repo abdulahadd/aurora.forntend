@@ -11,16 +11,15 @@ import { EVENT_API_PATHS } from "../atoms/paths/ApiPaths";
 import { getRequest } from "../atoms/api/Apis";
 
 const initialState: Event = {
-  id:"",
+  id: "",
   start: moment().toDate(),
   end: moment().toDate(),
   title: "No Events",
   resource: { id: "", users: [] },
 };
 
-const tomorrow=new Date(moment().toDate());
+const tomorrow = new Date(moment().toDate());
 tomorrow.setDate(tomorrow.getDate() + 1);
-
 
 const initialStateTomorrow: Event = {
   id: "",
@@ -58,8 +57,7 @@ function DefaultDashboard() {
       const response = await getRequest(
         userr.role !== "SuperUser"
           ? `${EVENT_API_PATHS.GET_EVENTS_FOR_ORG}${userr.orgId}`
-          : `${EVENT_API_PATHS.GET_EVENTS}`,
-        
+          : `${EVENT_API_PATHS.GET_EVENTS}`
       );
       tempEvents = response?.data.map((event) => ({
         id: event._id,
@@ -115,7 +113,10 @@ function DefaultDashboard() {
             className="bg-purple-900 text-white active:bg-purple-600 font-bold uppercase text-sm px-6 py-3 rounded shadow hover:shadow-lg outline-none focus:outline-none mr-1 ml-2 mb-4"
             type="button"
             onClick={() =>
-              navigate("../calender", { state: {key: "add", modal: true}, replace: true})
+              navigate("../calender", {
+                state: { key: "add", modal: true },
+                replace: true,
+              })
             }
           >
             <Add />
@@ -136,9 +137,13 @@ function DefaultDashboard() {
             <div
               key={index}
               className="bg-white shadow-lg rounded-lg overflow-hidden"
-              onClick={() =>
-                navigate("../calender", { state: {id: event.id, sidebar: true, key: "EventDet"}, replace: true })
-              }
+              onClick={() => {
+                if (event.id !== "")
+                  navigate("../calender", {
+                    state: { id: event.id, sidebar: true, key: "EventDet" },
+                    replace: true,
+                  });
+              }}
             >
               <div className="p-4">
                 <h3 className="text-xl font-semibold mb-2">{event.title}</h3>
@@ -163,9 +168,13 @@ function DefaultDashboard() {
             <div
               key={index}
               className="bg-white shadow-lg rounded-lg overflow-hidden"
-              onClick={() =>
-                navigate("../calender", { state: {id: event.id, sidebar: true, key: "EventDet"}, replace: true })
-              }
+              onClick={() => {
+                if (event.id !== "")
+                  navigate("../calender", {
+                    state: { id: event.id, sidebar: true, key: "EventDet" },
+                    replace: true,
+                  });
+              }}
             >
               <div className="p-4">
                 <h3 className="text-xl font-semibold mb-2">{event.title}</h3>

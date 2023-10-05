@@ -1,6 +1,16 @@
-import React, { Dispatch, SetStateAction, useEffect, useState } from "react";
+import React, {
+  Dispatch,
+  SetStateAction,
+  useContext,
+  useEffect,
+  useState,
+} from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
-import { Event, Resource } from "../../atoms/types/events/eventTypes";
+import {
+  Event,
+  EventDetails,
+  Resource,
+} from "../../atoms/types/events/eventTypes";
 import axios from "axios";
 import DateTimePicker from "react-datetime-picker";
 import "react-datetime-picker/dist/DateTimePicker.css";
@@ -12,16 +22,25 @@ import { useUserSelector } from "../../../redux/redux-hooks/hooks";
 import Select from "react-select";
 import Multiselect from "multiselect-react-dropdown";
 import { EVENT_API_PATHS, ORG_API_PATHS } from "../../atoms/paths/ApiPaths";
-import { getRequest, getRequestParams, patchRequest, postRequest } from "../../atoms/api/Apis";
+import {
+  getRequest,
+  getRequestParams,
+  patchRequest,
+  postRequest,
+} from "../../atoms/api/Apis";
+import { websocketContext } from "../../../context/socket/WebSocketContext";
+import { format } from "date-fns";
 
 type EventDate = Date | null;
 
 export interface EventProps {
-  title: string;
+  id: string;
+  orgID: string;
   purpose: DialogAction;
   showModal: boolean;
   setShowModal: Dispatch<SetStateAction<boolean>>;
   setEventsUpdated: Dispatch<SetStateAction<boolean>>;
+  setSidebarOpen: Dispatch<SetStateAction<boolean>>;
   resource: Resource | null;
 }
 
@@ -41,6 +60,7 @@ export default function EventModal(props: EventProps) {
   const userr = useUserSelector((state) => state);
   const [orgUsers, setorgUsers] = useState<MultiUsers[]>([]);
   const [selectedUsers, setSelectedUsers] = useState<MultiUsers[]>([]);
+  const [title, settitle] = useState("");
   const {
     register,
     handleSubmit,
@@ -51,6 +71,7 @@ export default function EventModal(props: EventProps) {
   const [orgs, setOrgs] = useState<DDListing[]>();
   const [selectOrga, setSelectOrga] = useState("Select");
   const [orgID, setorgID] = useState("");
+  const socket = useContext(websocketContext);
 
   const getUsers = async (data: string) => {
     try {
@@ -77,11 +98,11 @@ export default function EventModal(props: EventProps) {
   };
 
   const preSelect = () => {
-      getRequestParams(`users/ids`, {
-        params: {
-          ids: props.resource?.users.join(","), // Convert array to comma-separated string
-        },
-      })
+    getRequestParams(`users/ids`, {
+      params: {
+        ids: props.resource?.users.join(","), // Convert array to comma-separated string
+      },
+    })
       .then((response) => {
         const users: MultiUsers[] = response.data.map((user) => ({
           cat: user._id,
@@ -90,18 +111,36 @@ export default function EventModal(props: EventProps) {
         setSelectedUsers(users);
       })
       .catch((error) => console.log(error));
+
+    getRequest(`${EVENT_API_PATHS.GET_ONE}${props.id}`)
+      .then((response) => {
+        const event: EventDetails = response.data;
+        setStartDateTime(new Date(response.data.start));
+        setendDateTime(new Date(response.data.end));
+        settitle(response.data.title)
+      })
+      .catch((error) => console.log(error));
   };
 
   useEffect(() => {
     getOrgs();
     if (userr.role !== "SuperUser") {
       getUsers(userr.orgId);
+    } else {
+      getUsers(props.orgID);
     }
     if (props.purpose === DialogAction.EDIT_EVENT && props.showModal === true) {
       preSelect();
     }
   }, [props.showModal]);
-  
+
+  const createNotification = async (notification: any) => {
+    try {
+      const response = await postRequest(`/notifications`, notification);
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   const createEvent = async (data: Event) => {
     let obj: any;
@@ -120,12 +159,31 @@ export default function EventModal(props: EventProps) {
     } catch (error) {
       console.log(error);
     }
+    const notification = {
+      message: " You have been added to an event ",
+      createdAt: new Date(),
+      isNew: true,
+      users: users,
+      viewedBy: [],
+    };
+
+    createNotification(notification);
+
+    socket.emit("newNotification", notification);
   };
 
-  const editEvent = async (data: any, title: string) => {
+  const editEvent = async (data: any, id: string) => {
+    let obj: any = {};
+
+    for (const key in data) {
+      if (data[key] !== null && data[key] !== undefined) {
+        obj[key] = data[key];
+      }
+    }
+
     try {
       const response = await patchRequest(
-        `${EVENT_API_PATHS.EDIT_EVENT}${title}`,
+        `${EVENT_API_PATHS.EDIT_EVENT}${id}`,
         data
       );
     } catch (error) {
@@ -136,7 +194,11 @@ export default function EventModal(props: EventProps) {
   const onSubmit: SubmitHandler<Event> = (data) => {
     let obj: any;
     if (data.title !== "") {
-      obj = { ...data, start: startDateTime, end: endDateTime };
+      obj = {
+        ...data,
+        start: startDateTime ? startDateTime : null,
+        end: endDateTime ? endDateTime : null,
+      };
     } else obj = { start: startDateTime, end: endDateTime };
 
     if (props.purpose === DialogAction.CREATE_EVENT) {
@@ -145,12 +207,15 @@ export default function EventModal(props: EventProps) {
       setendDateTime(null);
       setSelectOrga("Select");
       props.setEventsUpdated(true);
+      setSelectedUsers([]);
     } else {
-      editEvent(obj, props?.title);
+      editEvent(obj, props?.id);
       setStartDateTime(null);
       setendDateTime(null);
       setSelectOrga("Select");
-      props.setEventsUpdated(true);
+      props.setEventsUpdated((prev) => !prev);
+      props.setSidebarOpen(false);
+      setSelectedUsers([]);
     }
     reset();
     props.setShowModal(false);
@@ -196,6 +261,7 @@ export default function EventModal(props: EventProps) {
                               : false,
                         })}
                         type="text"
+                        value={title}
                       />
                       <p className="text-left text-red-900 mb-2">
                         {errors.title &&

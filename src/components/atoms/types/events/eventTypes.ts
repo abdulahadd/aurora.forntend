@@ -15,6 +15,7 @@ export type Event={
 }
 
 export type EventDetails={
+  _id: string,
   start: EventDate,
     end: EventDate,
     title: string,

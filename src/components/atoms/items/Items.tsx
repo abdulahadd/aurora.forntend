@@ -9,13 +9,14 @@ import {
 } from "../../../redux/redux-hooks/hooks";
 import { useTitleState } from "../../../context/title/TitleState";
 import PersistedState from "../types/redux/redux-types";
+import { Dispatch, SetStateAction } from "react";
 
 interface ItemProps {
   title1: string;
   to: string;
   icon: any;
   selected: string;
-  setSelected: (value: string) => void;
+  setSelected: Dispatch<SetStateAction<string>>;
 }
 
 const Item: React.FC<ItemProps> = ({
@@ -28,7 +29,6 @@ const Item: React.FC<ItemProps> = ({
   const { setTitle } = useTitleState();
   const user = useUserSelector((state: PersistedState) => state);
   const dispatch = useUserDispatch();
-  const navigate = useNavigate();
 
   
 

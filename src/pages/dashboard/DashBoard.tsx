@@ -9,12 +9,13 @@ import "react-toastify/dist/ReactToastify.css";
 import Header from "../../components/molecules/headers/DashBoardHeader";
 import { useTitleState } from "../../context/title/TitleState";
 
+
+
 function DashBoard() {
   const notifications = ["Notification 1", "Notification 2", "Notification 3"];
   const userr = useUserSelector((state) => state);
   const [sidebarOpen, setSidebarOpen] = useState(true);
-  const { title } = useTitleState();
-  const navigate = useNavigate();
+  const [selected, setSelected] = useState("/dashboard/defaultdashboard");
 
   const toggleSidebar = () => {
     setSidebarOpen(!sidebarOpen);
@@ -44,6 +45,8 @@ function DashBoard() {
             toggleSidebar={toggleSidebar}
             isOpen={sidebarOpen}
             role={userr.role}
+            selected={selected}
+            setSelected={setSelected}
           />
         </div>
       )}
@@ -51,10 +54,7 @@ function DashBoard() {
         <NotificationPanel
           userLogoUrl="https://via.placeholder.com/100"
           userName={userr.username}
-          notifications={notifications}
         />
-
-        
 
         <Outlet />
       </div>

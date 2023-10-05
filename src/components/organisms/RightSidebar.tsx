@@ -19,8 +19,12 @@ import {
   patchRequest,
   postRequest,
 } from "../atoms/api/Apis";
+import { ToastContainer, toast } from "react-toastify";
 
 interface SideBarProps {
+  setSidebarOpen: Dispatch<SetStateAction<boolean>>;
+  setEventsUpdated: Dispatch<SetStateAction<boolean>>;
+  setOrgID: Dispatch<SetStateAction<string>>;
   currentEvent: string | undefined;
   setShowModal: Dispatch<SetStateAction<boolean>>;
   setPurpose: Dispatch<SetStateAction<DialogAction>>;
@@ -36,9 +40,12 @@ const initialState: CommentType = {
 };
 
 const RightSidebar: React.FC<SideBarProps> = ({
+  setOrgID,
   currentEvent,
   setShowModal,
   setPurpose,
+  setSidebarOpen,
+  setEventsUpdated,
 }) => {
   const user = useUserSelector((state) => state);
   const [addComment, setAddComment] = useState("");
@@ -49,14 +56,22 @@ const RightSidebar: React.FC<SideBarProps> = ({
   const [ifAdded, setifAdded] = useState(false);
   const [isEdit, setisEdit] = useState(false);
   const [editComment, seteditComment] = useState<CommentType>();
+  const [isUpdateInProgress, setUpdateInProgress] = useState(false);
 
-  const getComments = () => {
-    getRequest(`${COMMENT_API_PATHS.GET_COMMENTS_FOR_EVENT}${currentEvent}`)
-      .then((response) => {
-        const comment: CommentType[] = response.data;
-        setComments(comment);
-      })
-      .catch((error) => console.log(error));
+  const getComments = async () => {
+    
+    try {
+      
+      const response = await getRequest(
+        `${COMMENT_API_PATHS.GET_COMMENTS_FOR_EVENT}${currentEvent}`
+      );
+      
+      console.log("Response data", response.data);
+      const comment: CommentType[] = response.data;
+      setComments(comment);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   const getEventDetails = () => {
@@ -65,6 +80,7 @@ const RightSidebar: React.FC<SideBarProps> = ({
         const event: EventDetails = response.data;
         setStartDate(format(new Date(response.data.start), "kk:mm a "));
         setEndDate(format(new Date(response.data.end), "kk:mm a "));
+        setOrgID(event.orgId);
         setEventDet(event);
       })
       .catch((error) => console.log(error));
@@ -89,9 +105,12 @@ const RightSidebar: React.FC<SideBarProps> = ({
   };
 
   useEffect(() => {
+    console.log(ifAdded);
     getEventDetails();
-    getComments();
-  }, [ifAdded]);
+    if (!isUpdateInProgress) {
+      getComments();
+    }
+  }, [ifAdded, isUpdateInProgress]);
 
   const handleCommentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAddComment(event.target.value);
@@ -99,15 +118,26 @@ const RightSidebar: React.FC<SideBarProps> = ({
 
   const editHandler = async () => {
     try {
+      setUpdateInProgress(true);
+      console.log(comments);
       const response = await patchRequest(
         `${COMMENT_API_PATHS.EDIT_COMMENT}${editComment?._id}`,
         { comment: addComment, time: moment().toDate(), isEdited: true }
       );
+      setUpdateInProgress(false);
+      const index = comments.findIndex((x) => x?._id === editComment?._id);
+      console.log(index, response.data);
+      let tempComments = [...comments];
+      tempComments[index] = { ...response.data, _id: editComment?._id };
+      setComments(tempComments);
+      setTimeout(() => { getEventDetails(); }, 1000);
+      console.log("after edit: ", tempComments);
+
       setAddComment("");
-      setifAdded(!ifAdded);
       setisEdit(false);
     } catch (error) {
       console.log(error);
+      setUpdateInProgress(false);
     }
   };
 
@@ -127,6 +157,22 @@ const RightSidebar: React.FC<SideBarProps> = ({
     setShowModal(true);
   };
 
+  const handleEventDelete = async (id?: string) => {
+    try {
+      const response = await deleteRequest(
+        `${EVENT_API_PATHS.DELETE_EVENT}${id}`
+      );
+      setEventsUpdated((prev) => !prev);
+      setSidebarOpen((prev) => !prev);
+    } catch (error) {
+      console.log(error);
+    }
+
+    toast.success("Success Notification !", {
+      position: toast.POSITION.TOP_RIGHT,
+    });
+  };
+
   return (
     <div className="flex h-[700px] w-[300px]">
       <Sidebar width="300px">
@@ -136,7 +182,13 @@ const RightSidebar: React.FC<SideBarProps> = ({
               <div className=" text-xl ml-5 text-gray-200">
                 {eventDet?.title}
               </div>
-              <Edit sx={{ color: "white" }} onClick={handleClick}></Edit>
+              <div>
+                <Edit sx={{ color: "white" }} onClick={handleClick}></Edit>
+                <Delete
+                  sx={{ color: "white" }}
+                  onClick={() => handleEventDelete(eventDet?._id)}
+                ></Delete>
+              </div>
             </div>
           </div>
 
@@ -152,7 +204,7 @@ const RightSidebar: React.FC<SideBarProps> = ({
                 <h3 className="mb-4 text-lg font-semibold text-gray-900">
                   Comments
                 </h3>
-                {comments?.map(
+                {comments && comments?.map(
                   (comment) =>
                     comment && (
                       <div className="space-y-4 mr-4" key={comment?._id}>
@@ -227,6 +279,7 @@ const RightSidebar: React.FC<SideBarProps> = ({
           </Box>
         </Menu>
       </Sidebar>
+      <ToastContainer />
     </div>
   );
 };

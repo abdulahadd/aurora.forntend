@@ -1,5 +1,6 @@
 
 export default interface userState{
+    _id:'';
     username: string;
     password: string;
     token: string;
